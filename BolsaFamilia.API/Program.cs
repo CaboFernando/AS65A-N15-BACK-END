@@ -1,4 +1,6 @@
+using BolsaFamilia.Domain.Interfaces;
 using BolsaFamilia.Infra.Data;
+using BolsaFamilia.Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 
 var app = builder.Build();
