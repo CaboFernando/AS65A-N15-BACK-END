@@ -1,0 +1,56 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BolsaFamilia.API", "BolsaFamilia.API\BolsaFamilia.API.csproj", "{A5824AFE-C455-4819-ACE5-BA85DF3A2797}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 - Presentation", "01 - Presentation", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 - Application", "02 - Application", "{F946D876-66B6-4762-A508-23B463E98506}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BolsaFamilia.Application", "BolsaFamilia.Application\BolsaFamilia.Application.csproj", "{37BEB8C5-2E71-4945-B7A1-5278C7BD5C63}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 - Domain", "03 - Domain", "{F34370DB-C933-4608-BA6B-D5452E8D8F0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BolsaFamilia.Domain", "BolsaFamilia.Domain\BolsaFamilia.Domain.csproj", "{5551F7D8-C445-4230-9EE9-90FB8F92774F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 - Infra", "04 - Infra", "{479020E3-B6D4-479A-A9E9-CABF74E36343}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BolsaFamilia.Infra", "BolsaFamilia.Infra\BolsaFamilia.Infra.csproj", "{850FEAD9-0C6D-4657-A715-6B5D3B43254D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A5824AFE-C455-4819-ACE5-BA85DF3A2797}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5824AFE-C455-4819-ACE5-BA85DF3A2797}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5824AFE-C455-4819-ACE5-BA85DF3A2797}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5824AFE-C455-4819-ACE5-BA85DF3A2797}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37BEB8C5-2E71-4945-B7A1-5278C7BD5C63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37BEB8C5-2E71-4945-B7A1-5278C7BD5C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37BEB8C5-2E71-4945-B7A1-5278C7BD5C63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37BEB8C5-2E71-4945-B7A1-5278C7BD5C63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5551F7D8-C445-4230-9EE9-90FB8F92774F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5551F7D8-C445-4230-9EE9-90FB8F92774F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5551F7D8-C445-4230-9EE9-90FB8F92774F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5551F7D8-C445-4230-9EE9-90FB8F92774F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{850FEAD9-0C6D-4657-A715-6B5D3B43254D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{850FEAD9-0C6D-4657-A715-6B5D3B43254D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{850FEAD9-0C6D-4657-A715-6B5D3B43254D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{850FEAD9-0C6D-4657-A715-6B5D3B43254D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A5824AFE-C455-4819-ACE5-BA85DF3A2797} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{37BEB8C5-2E71-4945-B7A1-5278C7BD5C63} = {F946D876-66B6-4762-A508-23B463E98506}
+		{5551F7D8-C445-4230-9EE9-90FB8F92774F} = {F34370DB-C933-4608-BA6B-D5452E8D8F0D}
+		{850FEAD9-0C6D-4657-A715-6B5D3B43254D} = {479020E3-B6D4-479A-A9E9-CABF74E36343}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {00D35621-0256-415A-B6B5-82391FFDF68D}
+	EndGlobalSection
+EndGlobal
