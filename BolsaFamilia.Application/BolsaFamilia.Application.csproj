@@ -10,4 +10,10 @@
     <ProjectReference Include="..\BolsaFamilia.Domain\BolsaFamilia.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+    <Folder Include="Services\" />
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
 </Project>
