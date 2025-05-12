@@ -4,11 +4,11 @@ namespace BolsaFamilia.Domain.Interfaces
 {
     public interface IUsuarioRepository
     {
-        Task<Usuario> ListarTodos();
+        Task<IEnumerable<Usuario>> ListarTodos();
         Task<Usuario> BuscarById(int id);
         Task<Usuario> BuscarByCpf(string cpf);
         Task AdicionarAsync(Usuario user);
         Task AtualizarAsync(Usuario user);
-        Task RemoverAsync(string cpf);
+        Task RemoverAsync(Usuario user);
     }
 }

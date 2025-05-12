@@ -21,32 +21,35 @@ namespace BolsaFamilia.Infra.Repositories
 
         public async Task AdicionarAsync(Usuario user)
         {
-            throw new NotImplementedException();
+            _context.Usuarios.Add(user);
+            await _context.SaveChangesAsync();
         }
 
         public async Task AtualizarAsync(Usuario user)
         {
-            throw new NotImplementedException();
+            _context.Usuarios.Update(user);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<Usuario> BuscarByCpf(string cpf)
+        public async Task<Usuario> BuscarByCpf(string cpf)
         {
-            return _context.Usuarios.FirstOrDefaultAsync(s => s.Cpf == cpf);
+            return await _context.Usuarios.FirstOrDefaultAsync(s => s.Cpf == cpf);
         }
 
-        public Task<Usuario> BuscarById(int id)
+        public async Task<Usuario> BuscarById(int id)
         {
-            return _context.Usuarios.FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.Usuarios.FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public Task<Usuario> ListarTodos()
+        public async Task<IEnumerable<Usuario>> ListarTodos()
         {
-            throw new NotImplementedException();
+            return await _context.Usuarios.ToListAsync();
         }
 
-        public async Task RemoverAsync(string cpf)
+        public async Task RemoverAsync(Usuario user)
         {
-            throw new NotImplementedException();
+            _context.Usuarios.Remove(user);
+            await _context.SaveChangesAsync();
         }
     }
 }
