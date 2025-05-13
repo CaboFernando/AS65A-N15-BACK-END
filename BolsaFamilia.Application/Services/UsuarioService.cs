@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BolsaFamilia.Application.DTOs;
 using BolsaFamilia.Application.Interfaces;
 using BolsaFamilia.Domain.Entities;
 using BolsaFamilia.Domain.Interfaces;
@@ -18,34 +14,74 @@ namespace BolsaFamilia.Application.Services
             _usuarioRepository = usuarioRepository;
         }
 
-        public async Task AdicionarAsync(Usuario user)
+        public async Task AdicionarAsync(UsuarioDto dto)
         {
-            throw new NotImplementedException();
+            var exist = await _usuarioRepository.BuscarByCpf(dto.Cpf);
+
+            if (exist == null) 
+            {
+                var user = new Usuario
+                {
+                    Nome = dto.Nome,
+                    Cpf = dto.Cpf,
+                };
+
+                await _usuarioRepository.AdicionarAsync(user);
+            }
         }
 
-        public Task AtualizarAsync(Usuario user)
+        public async Task AtualizarAsync(UsuarioDto dto)
         {
-            throw new NotImplementedException();
+            var exist = await _usuarioRepository.BuscarByCpf(dto.Cpf);
+
+            if (exist != null)
+            {
+                exist.Nome = dto.Nome;
+                exist.Cpf = dto.Cpf;
+
+                await _usuarioRepository.AtualizarAsync(exist);
+            }
         }
 
-        public Task<Usuario> BuscarByCpf(string cpf)
+        public async Task<UsuarioDto> BuscarByCpf(string cpf)
         {
-            throw new NotImplementedException();
+            var exist = await _usuarioRepository.BuscarByCpf(cpf);
+
+            if (exist != null)
+            {
+                return new UsuarioDto { Nome = exist.Nome, Cpf = exist.Cpf };
+            }
+
+            return null;
         }
 
-        public Task<Usuario> BuscarById(int id)
+        public async Task<UsuarioDto> BuscarById(int id)
         {
-            throw new NotImplementedException();
+            var exist = await _usuarioRepository.BuscarById(id);
+
+            if (exist != null)
+            {
+                return new UsuarioDto { Nome = exist.Nome, Cpf = exist.Cpf };
+            }
+
+            return null;
         }
 
-        public Task<Usuario> ListarTodos()
+        public async Task<IEnumerable<UsuarioDto>> ListarTodos()
         {
-            throw new NotImplementedException();
+            var list = await _usuarioRepository.ListarTodos();
+
+            return list.Select(x => new UsuarioDto { Nome = x.Nome, Cpf = x.Cpf });
         }
 
-        public Task RemoverAsync(string cpf)
+        public async Task RemoverAsync(string cpf)
         {
-            throw new NotImplementedException();
+            var exist = await _usuarioRepository.BuscarByCpf(cpf);
+
+            if (exist != null)
+            {
+                await _usuarioRepository.RemoverAsync(exist);
+            }
         }
     }
 }
