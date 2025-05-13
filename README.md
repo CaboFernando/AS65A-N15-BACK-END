@@ -52,7 +52,7 @@ Autentica o usuário com Email e senha, e retorna um token JWT válido para as d
 
 ### 👤 Usuario
 
-> Todos os endpoints abaixo **exigem autenticação JWT**.
+> Exceto o endpoint de Cadastro de Usuários, Todos os outros endpoints abaixo **exigem autenticação JWT**.
 
 #### `GET /api/Usuario`
 
