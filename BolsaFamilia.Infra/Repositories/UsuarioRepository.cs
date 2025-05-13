@@ -36,6 +36,12 @@ namespace BolsaFamilia.Infra.Repositories
             return await _context.Usuarios.FirstOrDefaultAsync(s => s.Cpf == cpf);
         }
 
+        public async Task<Usuario> BuscarByEmail(string email)
+        {
+            return await _context.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+        }
+
+
         public async Task<Usuario> BuscarById(int id)
         {
             return await _context.Usuarios.FirstOrDefaultAsync(s => s.Id == id);

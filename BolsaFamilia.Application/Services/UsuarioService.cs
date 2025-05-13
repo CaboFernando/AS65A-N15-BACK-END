@@ -24,6 +24,8 @@ namespace BolsaFamilia.Application.Services
                 {
                     Nome = dto.Nome,
                     Cpf = dto.Cpf,
+                    Email = dto.Email,
+                    SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha)
                 };
 
                 await _usuarioRepository.AdicionarAsync(user);
@@ -38,6 +40,8 @@ namespace BolsaFamilia.Application.Services
             {
                 exist.Nome = dto.Nome;
                 exist.Cpf = dto.Cpf;
+                exist.Email = dto.Email;
+                exist.SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha);
 
                 await _usuarioRepository.AtualizarAsync(exist);
             }
@@ -49,7 +53,7 @@ namespace BolsaFamilia.Application.Services
 
             if (exist != null)
             {
-                return new UsuarioDto { Nome = exist.Nome, Cpf = exist.Cpf };
+                return new UsuarioDto { Nome = exist.Nome, Cpf = exist.Cpf, Email = exist.Email, Senha = exist.SenhaHash };
             }
 
             return null;
@@ -61,7 +65,7 @@ namespace BolsaFamilia.Application.Services
 
             if (exist != null)
             {
-                return new UsuarioDto { Nome = exist.Nome, Cpf = exist.Cpf };
+                return new UsuarioDto { Nome = exist.Nome, Cpf = exist.Cpf, Email = exist.Email, Senha = exist.SenhaHash };
             }
 
             return null;
@@ -71,7 +75,7 @@ namespace BolsaFamilia.Application.Services
         {
             var list = await _usuarioRepository.ListarTodos();
 
-            return list.Select(x => new UsuarioDto { Nome = x.Nome, Cpf = x.Cpf });
+            return list.Select(x => new UsuarioDto { Nome = x.Nome, Cpf = x.Cpf, Email = x.Email, Senha = x.SenhaHash });
         }
 
         public async Task RemoverAsync(string cpf)

@@ -2,10 +2,11 @@ using BolsaFamilia.Application.DTOs;
 using BolsaFamilia.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BolsaFamilia.API.Controllers
 {
-    [ApiController]
+    [ApiController, Authorize]
     [Route("api/[controller]")]
     public class UsuarioController : ControllerBase
     {
@@ -42,6 +43,7 @@ namespace BolsaFamilia.API.Controllers
             return Ok(result);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UsuarioDto dto)
         {
