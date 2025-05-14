@@ -12,8 +12,8 @@ namespace BolsaFamilia.Application.Interfaces
         Task<IEnumerable<UsuarioDto>> ListarTodos();
         Task<UsuarioDto> BuscarById(int id);
         Task<UsuarioDto> BuscarByCpf(string cpf);
-        Task AdicionarAsync(UsuarioDto user);
-        Task AtualizarAsync(UsuarioDto user);
-        Task RemoverAsync(string cpf);
+        Task<bool> AdicionarAsync(UsuarioDto dto);
+        Task<bool> AtualizarAsync(UsuarioDto dto);
+        Task<bool> RemoverAsync(string cpf);
     }
 }

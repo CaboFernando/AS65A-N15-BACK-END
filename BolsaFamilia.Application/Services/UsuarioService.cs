@@ -2,90 +2,136 @@
 using BolsaFamilia.Application.Interfaces;
 using BolsaFamilia.Domain.Entities;
 using BolsaFamilia.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace BolsaFamilia.Application.Services
 {
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly ILogger<UsuarioService> _logger;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository)
+        public UsuarioService(IUsuarioRepository usuarioRepository, ILogger<UsuarioService> logger)
         {
             _usuarioRepository = usuarioRepository;
+            _logger = logger;
         }
 
-        public async Task AdicionarAsync(UsuarioDto dto)
+        public async Task<bool> AdicionarAsync(UsuarioDto dto)
         {
-            var exist = await _usuarioRepository.BuscarByCpf(dto.Cpf);
-
-            if (exist == null) 
+            try
             {
-                var user = new Usuario
-                {
-                    Nome = dto.Nome,
-                    Cpf = dto.Cpf,
-                    Email = dto.Email,
-                    SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha)
-                };
+                if (await _usuarioRepository.BuscarByCpf(dto.Cpf) != null)
+                    return false;
 
+                var user = MapToEntity(dto);
                 await _usuarioRepository.AdicionarAsync(user);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao adicionar o usuário cpf: {dto.Cpf}");
+                return false;
             }
         }
 
-        public async Task AtualizarAsync(UsuarioDto dto)
+        public async Task<bool> AtualizarAsync(UsuarioDto dto)
         {
-            var exist = await _usuarioRepository.BuscarByCpf(dto.Cpf);
-
-            if (exist != null)
+            try
             {
-                exist.Nome = dto.Nome;
-                exist.Cpf = dto.Cpf;
-                exist.Email = dto.Email;
-                exist.SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha);
+                var user = await _usuarioRepository.BuscarByCpf(dto.Cpf);
+                if (user == null) return false;
 
-                await _usuarioRepository.AtualizarAsync(exist);
+                user.Nome = dto.Nome;
+                user.Email = dto.Email;
+                user.SenhaHash = HashPassword(dto.Senha);
+                await _usuarioRepository.AtualizarAsync(user);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao atualizar o usuário cpf: {dto.Cpf}");
+                return false;
             }
         }
 
         public async Task<UsuarioDto> BuscarByCpf(string cpf)
         {
-            var exist = await _usuarioRepository.BuscarByCpf(cpf);
-
-            if (exist != null)
+            try
             {
-                return new UsuarioDto { Nome = exist.Nome, Cpf = exist.Cpf, Email = exist.Email, Senha = exist.SenhaHash };
+                var user = await _usuarioRepository.BuscarByCpf(cpf);
+                return user == null ? null : MapToDto(user);
             }
-
-            return null;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao buscar o usuário cpf: {cpf}");
+                return null;
+            }
         }
 
         public async Task<UsuarioDto> BuscarById(int id)
         {
-            var exist = await _usuarioRepository.BuscarById(id);
-
-            if (exist != null)
+            try
             {
-                return new UsuarioDto { Nome = exist.Nome, Cpf = exist.Cpf, Email = exist.Email, Senha = exist.SenhaHash };
+                var user = await _usuarioRepository.BuscarById(id);
+                return user == null ? null : MapToDto(user);
             }
-
-            return null;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao buscar o usuário id: {id}");
+                return null;
+            }
         }
 
         public async Task<IEnumerable<UsuarioDto>> ListarTodos()
         {
-            var list = await _usuarioRepository.ListarTodos();
-
-            return list.Select(x => new UsuarioDto { Nome = x.Nome, Cpf = x.Cpf, Email = x.Email, Senha = x.SenhaHash });
-        }
-
-        public async Task RemoverAsync(string cpf)
-        {
-            var exist = await _usuarioRepository.BuscarByCpf(cpf);
-
-            if (exist != null)
+            try
             {
-                await _usuarioRepository.RemoverAsync(exist);
+                var users = await _usuarioRepository.ListarTodos();
+                return users.Select(MapToDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao listar os usuários");
+                return Enumerable.Empty<UsuarioDto>();
             }
         }
+
+        public async Task<bool> RemoverAsync(string cpf)
+        {
+            try
+            {
+                var user = await _usuarioRepository.BuscarByCpf(cpf);
+                if (user == null) return false;
+
+                await _usuarioRepository.RemoverAsync(user);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao remover o usuário cpf: {cpf}");
+                return false;
+            }
+        }
+
+        private Usuario MapToEntity(UsuarioDto dto) => new Usuario
+        {
+            Nome = dto.Nome,
+            Cpf = dto.Cpf,
+            Email = dto.Email,
+            SenhaHash = HashPassword(dto.Senha)
+        };
+
+        private UsuarioDto MapToDto(Usuario usuario) => new UsuarioDto
+        {
+            Nome = usuario.Nome,
+            Cpf = usuario.Cpf,
+            Email = usuario.Email,
+            Senha = usuario.SenhaHash
+        };
+
+        private string HashPassword(string senha) =>
+            BCrypt.Net.BCrypt.HashPassword(senha);
     }
+
 }
