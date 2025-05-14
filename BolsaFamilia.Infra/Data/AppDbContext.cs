@@ -11,6 +11,7 @@ namespace BolsaFamilia.Infra.Data
         }
 
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Parente> Parentes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,6 +29,12 @@ namespace BolsaFamilia.Infra.Data
                 .Property(s => s.Cpf)
                 .IsRequired()
                 .HasMaxLength(11);
+
+            modelBuilder.Entity<Parente>()
+                .HasOne(p => p.Usuario)
+                .WithMany(u => u.Parentes)
+                .HasForeignKey(p => p.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

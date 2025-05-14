@@ -14,5 +14,7 @@ namespace BolsaFamilia.Domain.Entities
 
         public string Email { get; set; }
         public string SenhaHash { get; set; }
+
+        public ICollection<Parente> Parentes { get; set; } = new List<Parente>();
     }
 }

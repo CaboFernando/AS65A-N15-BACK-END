@@ -75,9 +75,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 //Repositories
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IParenteRepository, ParenteRepository>();
 
 //Services
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IParenteService, ParenteService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 
