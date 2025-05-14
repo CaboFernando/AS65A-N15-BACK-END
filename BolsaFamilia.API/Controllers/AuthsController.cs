@@ -7,12 +7,12 @@ namespace BolsaFamilia.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthsController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly ILogger<AuthController> _logger;
+        private readonly ILogger<AuthsController> _logger;
 
-        public AuthController(IAuthService authService, ILogger<AuthController> logger)
+        public AuthsController(IAuthService authService, ILogger<AuthsController> logger)
         {
             _authService = authService;
             _logger = logger;
