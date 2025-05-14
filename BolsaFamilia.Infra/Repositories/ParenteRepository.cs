@@ -26,20 +26,22 @@ namespace BolsaFamilia.Infra.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Parente> BuscarByCpf(string cpf)
+        public async Task<Parente> BuscarByCpf(string cpf, int userId)
         {
-            return await _context.Parentes.FirstOrDefaultAsync(s => s.Cpf == cpf);
+            return await _context.Parentes.FirstOrDefaultAsync(s => s.Cpf == cpf && s.UsuarioId == userId);
         }
 
 
-        public async Task<Parente> BuscarById(int id)
+        public async Task<Parente> BuscarById(int id, int userId)
         {
-            return await _context.Parentes.FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.Parentes.FirstOrDefaultAsync(s => s.Id == id && s.UsuarioId == userId);
         }
 
-        public async Task<IEnumerable<Parente>> ListarTodos()
+        public async Task<IEnumerable<Parente>> ListarTodos(int userId)
         {
-            return await _context.Parentes.ToListAsync();
+            var list = await _context.Parentes.ToListAsync();
+
+            return list.Where(s => s.UsuarioId == userId);
         }
 
         public async Task RemoverAsync(Parente parent)

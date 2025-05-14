@@ -23,11 +23,11 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
-                if (await _parenteRepository.BuscarByCpf(dto.Cpf) != null)
-                    return false;
-
                 var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
                 if (loggedUserId == null)
+                    return false;
+
+                if (await _parenteRepository.BuscarByCpf(dto.Cpf, (int)loggedUserId) != null)
                     return false;
 
                 var parent = MapToEntity(dto);
@@ -47,12 +47,12 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
-                var parent = await _parenteRepository.BuscarByCpf(dto.Cpf);
-                if (parent == null) return false;
-
                 var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
                 if (loggedUserId == null)
                     return false;
+
+                var parent = await _parenteRepository.BuscarByCpf(dto.Cpf, (int)loggedUserId);
+                if (parent == null) return false;
 
                 parent.Nome = dto.Nome;
                 parent.GrauParentesco = dto.GrauParentesco;
@@ -78,7 +78,9 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
-                var parent = await _parenteRepository.BuscarByCpf(cpf);
+                var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
+
+                var parent = await _parenteRepository.BuscarByCpf(cpf, (int)loggedUserId);
                 return parent == null ? null : MapToDto(parent);
             }
             catch (Exception ex)
@@ -92,7 +94,9 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
-                var parent = await _parenteRepository.ListarTodos();
+                var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
+
+                var parent = await _parenteRepository.ListarTodos((int)loggedUserId);
                 return parent.Select(MapToDto);
             }
             catch (Exception ex)
@@ -106,7 +110,9 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
-                var parent = await _parenteRepository.BuscarByCpf(cpf);
+                var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
+
+                var parent = await _parenteRepository.BuscarByCpf(cpf, (int)loggedUserId);
                 if (parent == null) return false;
 
                 await _parenteRepository.RemoverAsync(parent);
