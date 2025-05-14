@@ -1,8 +1,11 @@
+Com base na sua `ParentesController`, enums `Sexo` e `EstadoCivil`, e estrutura do projeto, aqui está o novo conteúdo completo e atualizado do `README.md`:
+
+---
+
+```markdown
 # 📦 BolsaFamilia API
 
-Este repositório tem como objetivo armazenar o código-fonte da Web API que será consumida pelo front-end no projeto da disciplina de AS65A - Certificadora De Competência Identitária N15 (2025_01).
-
-API desenvolvida em .NET Core para gerenciamento de usuários do programa Bolsa Família, com autenticação via JWT e documentação automática via Swagger.
+Este repositório contém o código-fonte da Web API desenvolvida em .NET Core 8 para gerenciamento de usuários e seus respectivos membros familiares (parentes) no contexto do programa Bolsa Família. A aplicação utiliza autenticação via JWT, Entity Framework Core, arquitetura DDD, e documentação via Swagger.
 
 ---
 
@@ -35,10 +38,10 @@ POST /api/Auth/login
 }
 ```
 
-3. No Swagger (ou nos headers das requisições), clique em **Authorize** e insira o token no formato:
+3. No Swagger (ou nas requisições via Postman/curl), clique em **Authorize** e insira o token no formato:
 
 ```
-{seu_token}
+Bearer {seu_token}
 ```
 
 ---
@@ -49,93 +52,128 @@ POST /api/Auth/login
 
 #### `POST /api/Auth/login`
 
-Autentica o usuário com email e senha, e retorna um token JWT válido para as demais requisições.
+Autentica o usuário com email e senha, retornando um token JWT válido.
 
 ---
 
 ### 👤 Usuario
 
-> Exceto o endpoint de Cadastro de Usuários, todos os outros endpoints abaixo **exigem autenticação JWT**.
+> Todos os endpoints abaixo **exigem autenticação JWT**, exceto o cadastro.
 
 #### `GET /api/Usuario`
 
 Retorna uma lista de todos os usuários cadastrados.
 
----
-
 #### `GET /api/Usuario/{id}`
 
 Consulta um usuário específico pelo seu **ID**.
 
-**Exemplo:**
-
-```
-GET /api/Usuario/1
-```
-
----
-
 #### `GET /api/Usuario/cpf/{cpf}`
 
-Consulta um usuário específico pelo **CPF**.
-
-**Exemplo:**
-
-```
-GET /api/Usuario/cpf/12345678900
-```
-
----
+Consulta um usuário específico pelo seu **CPF**.
 
 #### `POST /api/Usuario`
 
 Cadastra um novo usuário.
 
-**Body (exemplo):**
+**Exemplo de Body:**
 
 ```json
 {
   "nome": "João da Silva",
   "cpf": "12345678900",
-  "email": "teste@gmail.com",
+  "email": "joao@gmail.com",
   "senha": "senha123"
 }
 ```
-
----
 
 #### `PUT /api/Usuario`
 
 Atualiza os dados de um usuário existente.
 
-**Body (exemplo):**
-
-```json
-{
-  "nome": "João da Silva",
-  "cpf": "12345678900",
-  "email": "teste@gmail.com",
-  "senha": "novaSenha456"
-}
-```
-
----
-
 #### `DELETE /api/Usuario/{cpf}`
 
 Remove um usuário com base no CPF informado na rota.
 
-**Exemplo:**
+---
 
+### 👪 Parente
+
+> Todos os endpoints exigem autenticação JWT. Os dados cadastrados ficam vinculados ao usuário autenticado.
+
+#### `GET /api/Parentes`
+
+Retorna todos os parentes cadastrados pelo usuário autenticado.
+
+#### `GET /api/Parentes/cpf/{cpf}`
+
+Consulta um parente específico pelo CPF.
+
+#### `POST /api/Parentes`
+
+Cadastra um novo parente vinculado ao usuário autenticado.
+
+**Exemplo de Body:**
+
+```json
+{
+  "nome": "Maria da Silva",
+  "cpf": "98765432100",
+  "grauParentesco": "Mae",
+  "sexo": 2, //<-- Feminino
+  "estadoCivil": 2, //<--Casado
+  "ocupacao": "Professora",
+  "telefone": "(11) 91234-5678",
+  "renda": 2300.00
+}
 ```
-DELETE /api/Usuario/12345678900
+
+#### `PUT /api/Parentes`
+
+Atualiza os dados de um parente (identificado pelo CPF no body).
+
+#### `DELETE /api/Parentes/{cpf}`
+
+Remove um parente com base no CPF informado.
+
+---
+
+## 📘 Como enviar valores de enum (`sexo` e `estadoCivil`)
+
+Os campos `sexo` e `estadoCivil` devem ser enviados como **inteiro** no JSON, correspondendo exatamente aos nomes abaixo:
+
+### 🎭 Sexo
+
+| Valor (string) | Código         |
+| -------------- | -------------- |
+| "Masculino"    | 1              |
+| "Feminino"     | 2              |
+| "Outro"        | 3              |
+
+### 💍 Estado Civil
+
+| Valor (string) | Código         |
+| -------------- | -------------- |
+| "Solteiro"     | 1              |
+| "Casado"       | 2              |
+| "Divorciado"   | 3              |
+| "Viuvo"        | 4              |
+| "UniaoEstavel" | 5              |
+
+> ⚠️ **Atenção:** os valores devem ser enviados com **código exato** no corpo da requisição. Exemplo:
+
+```json
+{
+  "estadoCivil": 1,
+  "sexo": 1
+}
 ```
 
 ---
 
 ## ⚙️ Configurações JWT
 
-No `appsettings.json`, defina:
+No `appsettings.json`, configure as informações do JWT:
 
 ```json
 "Jwt": {
@@ -154,7 +192,7 @@ No `appsettings.json`, defina:
 * Swagger (Swashbuckle)
 * JWT Bearer Authentication
 * SQL Server
-* DDD
+* DDD (Domain-Driven Design)
 
 ---
 
@@ -168,4 +206,3 @@ No `appsettings.json`, defina:
 
 ```
 
----
