@@ -22,7 +22,7 @@ POST /api/Auth/login
 
 ```json
 {
-  "cpf": "12345678900",
+  "email": "teste@gmail.com",
   "senha": "suaSenha"
 }
 ````
@@ -38,7 +38,7 @@ POST /api/Auth/login
 3. No Swagger (ou nos headers das requisições), clique em **Authorize** e insira o token no formato:
 
 ```
-Bearer {seu_token}
+{seu_token}
 ```
 
 ---
@@ -49,7 +49,7 @@ Bearer {seu_token}
 
 #### `POST /api/Auth/login`
 
-Autentica o usuário com CPF e senha, e retorna um token JWT válido para as demais requisições.
+Autentica o usuário com email e senha, e retorna um token JWT válido para as demais requisições.
 
 ---
 
