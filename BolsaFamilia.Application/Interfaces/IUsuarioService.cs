@@ -10,6 +10,7 @@ namespace BolsaFamilia.Application.Interfaces
     public interface IUsuarioService
     {
         Task<IEnumerable<UsuarioDto>> ListarTodos();
+        Task<int?> BuscarUsuarioLogadoIdAsync();
         Task<UsuarioDto> BuscarById(int id);
         Task<UsuarioDto> BuscarByCpf(string cpf);
         Task<bool> AdicionarAsync(UsuarioDto dto);
