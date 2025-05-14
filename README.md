@@ -1,8 +1,4 @@
-Com base na sua `ParentesController`, enums `Sexo` e `EstadoCivil`, e estrutura do projeto, aqui está o novo conteúdo completo e atualizado do `README.md`:
 
----
-
-```markdown
 # 📦 BolsaFamilia API
 
 Este repositório contém o código-fonte da Web API desenvolvida em .NET Core 8 para gerenciamento de usuários e seus respectivos membros familiares (parentes) no contexto do programa Bolsa Família. A aplicação utiliza autenticação via JWT, Entity Framework Core, arquitetura DDD, e documentação via Swagger.
