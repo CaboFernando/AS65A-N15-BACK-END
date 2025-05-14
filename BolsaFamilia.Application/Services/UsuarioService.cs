@@ -2,6 +2,7 @@
 using BolsaFamilia.Application.Interfaces;
 using BolsaFamilia.Domain.Entities;
 using BolsaFamilia.Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace BolsaFamilia.Application.Services
@@ -10,11 +11,13 @@ namespace BolsaFamilia.Application.Services
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ILogger<UsuarioService> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository, ILogger<UsuarioService> logger)
+        public UsuarioService(IUsuarioRepository usuarioRepository, ILogger<UsuarioService> logger, IHttpContextAccessor httpContextAccessor)
         {
             _usuarioRepository = usuarioRepository;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<bool> AdicionarAsync(UsuarioDto dto)
@@ -53,6 +56,17 @@ namespace BolsaFamilia.Application.Services
                 _logger.LogError(ex, $"Erro ao atualizar o usuário cpf: {dto.Cpf}");
                 return false;
             }
+        }
+
+        public async Task<int?> BuscarUsuarioLogadoIdAsync()
+        {
+            var userIdClaim = _httpContextAccessor.HttpContext?.User?
+                .FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+                return null;
+
+            return userId;
         }
 
         public async Task<UsuarioDto> BuscarByCpf(string cpf)

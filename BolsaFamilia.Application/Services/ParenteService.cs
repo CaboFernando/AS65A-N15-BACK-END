@@ -10,11 +10,13 @@ namespace BolsaFamilia.Application.Services
     {
         private readonly IParenteRepository _parenteRepository;
         private readonly ILogger<ParenteService> _logger;
+        private readonly IUsuarioService _usuarioService;
 
-        public ParenteService(IParenteRepository parenteRepository, ILogger<ParenteService> logger)
+        public ParenteService(IParenteRepository parenteRepository, ILogger<ParenteService> logger, IUsuarioService usuarioService)
         {
             _parenteRepository = parenteRepository;
             _logger = logger;
+            _usuarioService = usuarioService;
         }
 
         public async Task<bool> AdicionarAsync(ParenteDto dto)
@@ -24,7 +26,13 @@ namespace BolsaFamilia.Application.Services
                 if (await _parenteRepository.BuscarByCpf(dto.Cpf) != null)
                     return false;
 
+                var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
+                if (loggedUserId == null)
+                    return false;
+
                 var parent = MapToEntity(dto);
+                parent.UsuarioId = (int)loggedUserId;
+
                 await _parenteRepository.AdicionarAsync(parent);
                 return true;
             }
@@ -42,6 +50,10 @@ namespace BolsaFamilia.Application.Services
                 var parent = await _parenteRepository.BuscarByCpf(dto.Cpf);
                 if (parent == null) return false;
 
+                var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
+                if (loggedUserId == null)
+                    return false;
+
                 parent.Nome = dto.Nome;
                 parent.GrauParentesco = dto.GrauParentesco;
                 parent.Sexo = dto.Sexo;
@@ -50,6 +62,8 @@ namespace BolsaFamilia.Application.Services
                 parent.Ocupacao = dto.Ocupacao;
                 parent.Telefone = dto.Telefone;
                 parent.Renda = dto.Renda;
+                parent.UsuarioId = (int)loggedUserId;
+
                 await _parenteRepository.AtualizarAsync(parent);
                 return true;
             }
