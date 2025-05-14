@@ -1,10 +1,11 @@
 # 📦 BolsaFamilia API
 
-Este repositório tem como objetivo, armazenamento do código fonte da Web API que será consumido pelo front-end no projeto da disciplina de AS65A - Certificadora De Competência Identitária N15 (2025_01).
+Este repositório tem como objetivo armazenar o código-fonte da Web API que será consumida pelo front-end no projeto da disciplina de AS65A - Certificadora De Competência Identitária N15 (2025_01).
 
 API desenvolvida em .NET Core para gerenciamento de usuários do programa Bolsa Família, com autenticação via JWT e documentação automática via Swagger.
 
 ---
+
 ## 🔐 Autenticação
 
 ### Como autenticar?
@@ -12,8 +13,10 @@ API desenvolvida em .NET Core para gerenciamento de usuários do programa Bolsa 
 1. Realize o login com o endpoint:
 
 ```
+
 POST /api/Auth/login
-```
+
+````
 
 **Body (JSON):**
 
@@ -22,7 +25,7 @@ POST /api/Auth/login
   "cpf": "12345678900",
   "senha": "suaSenha"
 }
-```
+````
 
 2. O retorno será um **token JWT**. Exemplo:
 
@@ -46,17 +49,43 @@ Bearer {seu_token}
 
 #### `POST /api/Auth/login`
 
-Autentica o usuário com Email e senha, e retorna um token JWT válido para as demais requisições.
+Autentica o usuário com CPF e senha, e retorna um token JWT válido para as demais requisições.
 
 ---
 
 ### 👤 Usuario
 
-> Exceto o endpoint de Cadastro de Usuários, Todos os outros endpoints abaixo **exigem autenticação JWT**.
+> Exceto o endpoint de Cadastro de Usuários, todos os outros endpoints abaixo **exigem autenticação JWT**.
 
 #### `GET /api/Usuario`
 
 Retorna uma lista de todos os usuários cadastrados.
+
+---
+
+#### `GET /api/Usuario/{id}`
+
+Consulta um usuário específico pelo seu **ID**.
+
+**Exemplo:**
+
+```
+GET /api/Usuario/1
+```
+
+---
+
+#### `GET /api/Usuario/cpf/{cpf}`
+
+Consulta um usuário específico pelo **CPF**.
+
+**Exemplo:**
+
+```
+GET /api/Usuario/cpf/12345678900
+```
+
+---
 
 #### `POST /api/Usuario`
 
@@ -68,10 +97,12 @@ Cadastra um novo usuário.
 {
   "nome": "João da Silva",
   "cpf": "12345678900",
-  "Email": "teste@gmail.com",
+  "email": "teste@gmail.com",
   "senha": "senha123"
 }
 ```
+
+---
 
 #### `PUT /api/Usuario`
 
@@ -83,36 +114,22 @@ Atualiza os dados de um usuário existente.
 {
   "nome": "João da Silva",
   "cpf": "12345678900",
-  "Email": "teste@gmail.com",
-  "senha": "senha123"
+  "email": "teste@gmail.com",
+  "senha": "novaSenha456"
 }
 ```
 
-#### `DELETE /api/Usuario`
+---
 
-Remove um usuário com base no corpo da requisição.
+#### `DELETE /api/Usuario/{cpf}`
 
-**Body (exemplo):**
+Remove um usuário com base no CPF informado na rota.
 
-```json
-{
-  "cpf": 1
-}
+**Exemplo:**
+
 ```
-
-#### `GET /api/Usuario/get-by-id/{id}`
-
-Consulta um usuário específico pelo seu ID.
-
-**Exemplo:**
-`GET /api/Usuario/get-by-id/1`
-
-#### `GET /api/Usuario/get-by-cpf/{cpf}`
-
-Consulta um usuário específico pelo CPF.
-
-**Exemplo:**
-`GET /api/Usuario/get-by-cpf/12345678900`
+DELETE /api/Usuario/12345678900
+```
 
 ---
 
@@ -141,11 +158,14 @@ No `appsettings.json`, defina:
 
 ---
 
+## 👥 Membros do Grupo
 
-Os membros do grupo são:
+* André Faria De Souza - RA 2101106
+* Beatriz Aparecida Banaki De Campos - RA 2210533
+* Carlos Fernando Dos Santos - RA 1692984
+* Rafael De Palma Francisco - RA 2465248
+* Sarah Kelly Almeida - RA 1842293
 
-## - André Faria De Souza RA 2101106
-## - Beatriz Aparecida Banaki De Campos RA 2210533
-## - Carlos Fernando Dos Santos RA 1692984
-## - Rafael De Palma Francisco RA 2465248
-## - Sarah Kelly Almeida RA 1842293
+```
+
+---
