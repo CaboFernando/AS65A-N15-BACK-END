@@ -41,18 +41,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 
+// 2. Configuração do CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
         policy
-            .AllowAnyOrigin()
+            .AllowAnyOrigin() // Permite qualquer origem. Para maior segurança, use .WithOrigins("http://127.0.0.1:5500")
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
 });
-
-
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -96,7 +95,6 @@ builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IParenteService, ParenteService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -107,11 +105,12 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger"; // Para funcionar em /swagger
 });
 
-
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+// 3. Aplicação do CORS na pipeline (antes de Authentication e Authorization)
+app.UseCors("AllowAll");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
