@@ -125,10 +125,35 @@ namespace BolsaFamilia.Application.Services
             }
         }
 
+        public async Task<RendaDto> CalcularRendaFamiliarAsync()
+        {
+            var usuarioId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
+            if (usuarioId == null)
+            {
+                return new RendaDto
+                {
+                    RendaTotal = 0,
+                    RendaPerCapita = 0,
+                    TemDireito = false
+                };
+            }
+
+            var parentes = await _parenteRepository.ListarTodos((int)usuarioId);
+            var rendaTotal = parentes.Sum(p => p.Renda);
+            var rendaPerCapita = parentes.Any() ? rendaTotal / parentes.Count() : 0;
+
+            return new RendaDto
+            {
+                RendaTotal = rendaTotal,
+                RendaPerCapita = rendaPerCapita,
+                TemDireito = rendaPerCapita <= 218
+            };
+        }
+
         private Parente MapToEntity(ParenteDto dto) => new Parente
         {
-            Nome = dto.Nome,            
-            GrauParentesco = dto.GrauParentesco, 
+            Nome = dto.Nome,
+            GrauParentesco = dto.GrauParentesco,
             Sexo = dto.Sexo,
             EstadoCivil = dto.EstadoCivil,
             Cpf = dto.Cpf,
@@ -149,5 +174,4 @@ namespace BolsaFamilia.Application.Services
             Renda = parente.Renda
         };
     }
-
 }

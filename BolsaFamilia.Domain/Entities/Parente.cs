@@ -21,5 +21,16 @@ namespace BolsaFamilia.Domain.Entities
 
         public int UsuarioId { get; set; }
         public Usuario Usuario { get; set; }
+
+        public static decimal CalcularRendaTotal(List<Parente> parentes)
+        {
+            return parentes.Sum(p => p.Renda);
+        }
+
+        public static decimal CalcularRendaPerCapita(List<Parente> parentes)
+        {
+            if (parentes == null || !parentes.Any()) return 0;
+            return CalcularRendaTotal(parentes) / parentes.Count;
+        }
     }
 }
