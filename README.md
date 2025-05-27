@@ -13,7 +13,7 @@ Este repositório contém o código-fonte da Web API desenvolvida em .NET Core 8
 
 ```
 
-POST /api/Auth/login
+POST /api/Auths/login
 
 ````
 
@@ -46,7 +46,7 @@ Bearer {seu_token}
 
 ### 🔐 Auth
 
-#### `POST /api/Auth/login`
+#### `POST /api/Auths/login`
 
 Autentica o usuário com email e senha, retornando um token JWT válido.
 
@@ -56,19 +56,19 @@ Autentica o usuário com email e senha, retornando um token JWT válido.
 
 > Todos os endpoints abaixo **exigem autenticação JWT**, exceto o cadastro.
 
-#### `GET /api/Usuario`
+#### `GET /api/Usuarios`
 
 Retorna uma lista de todos os usuários cadastrados.
 
-#### `GET /api/Usuario/{id}`
+#### `GET /api/Usuarios/{id}`
 
 Consulta um usuário específico pelo seu **ID**.
 
-#### `GET /api/Usuario/cpf/{cpf}`
+#### `GET /api/Usuarios/cpf/{cpf}`
 
 Consulta um usuário específico pelo seu **CPF**.
 
-#### `POST /api/Usuario`
+#### `POST /api/Usuarios`
 
 Cadastra um novo usuário.
 
@@ -83,11 +83,11 @@ Cadastra um novo usuário.
 }
 ```
 
-#### `PUT /api/Usuario`
+#### `PUT /api/Usuarios`
 
 Atualiza os dados de um usuário existente.
 
-#### `DELETE /api/Usuario/{cpf}`
+#### `DELETE /api/Usuarios/{cpf}`
 
 Remove um usuário com base no CPF informado na rota.
 
