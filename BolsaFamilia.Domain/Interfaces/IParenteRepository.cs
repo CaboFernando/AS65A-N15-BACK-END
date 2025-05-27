@@ -10,5 +10,6 @@ namespace BolsaFamilia.Domain.Interfaces
         Task AdicionarAsync(Parente parent);
         Task AtualizarAsync(Parente parent);
         Task RemoverAsync(Parente parent);
+        Task<List<Parente>> ObterPorUsuarioIdAsync(int usuarioId);
     }
 }
