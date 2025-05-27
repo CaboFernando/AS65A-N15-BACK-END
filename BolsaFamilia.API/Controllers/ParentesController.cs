@@ -53,11 +53,11 @@ namespace BolsaFamilia.API.Controllers
             var success = await _parentesService.RemoverAsync(cpf);
             return success ? Ok("Usuário removido com sucesso!") : BadRequest("Erro ao remover usuário.");
         }
-        
-        [HttpGet("renda/{usuarioId}")]
-        public async Task<IActionResult> CalcularRenda(int usuarioId)
+
+        [HttpGet("renda")]
+        public async Task<IActionResult> CalcularRenda()
         {
-            var rendaDto = await _parentesService.CalcularRendaFamiliarAsync(usuarioId);
+            var rendaDto = await _parentesService.CalcularRendaFamiliarAsync();
             return Ok(rendaDto);
         }
     }
