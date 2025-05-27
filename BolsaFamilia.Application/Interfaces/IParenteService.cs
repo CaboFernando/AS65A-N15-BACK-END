@@ -1,9 +1,10 @@
-﻿using System;
+﻿using BolsaFamilia.Application.DTOs;
+using BolsaFamilia.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BolsaFamilia.Application.DTOs;
 
 namespace BolsaFamilia.Application.Interfaces
 {
@@ -14,5 +15,6 @@ namespace BolsaFamilia.Application.Interfaces
         Task<bool> AdicionarAsync(ParenteDto dto);
         Task<bool> AtualizarAsync(ParenteDto dto);
         Task<bool> RemoverAsync(string cpf);
+        Task<RendaDto> CalcularRendaFamiliarAsync();
     }
 }
