@@ -132,6 +132,10 @@ Atualiza os dados de um parente (identificado pelo CPF no body).
 
 Remove um parente com base no CPF informado.
 
+#### `GET /api/Parentes/renda`
+
+Vai retornar informações sobre a renda dos parentes vinculados ao usuário logado, apresentando a informação se ele pode ou não ser elegível ao programa do Bolsa Família
+
 ---
 
 ## 📘 Como enviar valores de enum (`sexo` e `estadoCivil`)
