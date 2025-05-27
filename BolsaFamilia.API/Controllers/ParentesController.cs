@@ -1,8 +1,9 @@
 using BolsaFamilia.Application.DTOs;
 using BolsaFamilia.Application.Interfaces;
+using BolsaFamilia.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authorization;
 
 namespace BolsaFamilia.API.Controllers
 {
@@ -51,6 +52,13 @@ namespace BolsaFamilia.API.Controllers
         {
             var success = await _parentesService.RemoverAsync(cpf);
             return success ? Ok("Usuário removido com sucesso!") : BadRequest("Erro ao remover usuário.");
+        }
+        
+        [HttpGet("renda/{usuarioId}")]
+        public async Task<IActionResult> CalcularRenda(int usuarioId)
+        {
+            var rendaDto = await _parentesService.CalcularRendaFamiliarAsync(usuarioId);
+            return Ok(rendaDto);
         }
     }
 

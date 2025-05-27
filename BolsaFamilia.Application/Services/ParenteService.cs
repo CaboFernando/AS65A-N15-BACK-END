@@ -124,6 +124,19 @@ namespace BolsaFamilia.Application.Services
                 return false;
             }
         }
+         public async Task<RendaDto> CalcularRendaFamiliarAsync(int usuarioId)
+            {
+                var parentes = await _parenteRepository.ObterPorUsuarioIdAsync(usuarioId);
+                var rendaTotal = Parente.CalcularRendaTotal(parentes);
+                var rendaPerCapita = Parente.CalcularRendaPerCapita(parentes);
+
+                return new RendaDto
+                {
+                    RendaTotal = rendaTotal,
+                    RendaPerCapita = rendaPerCapita,
+                    TemDireito = rendaPerCapita <= 218 // valor limite conforme regra do Bolsa Família
+                };
+            }
 
         private Parente MapToEntity(ParenteDto dto) => new Parente
         {
@@ -151,3 +164,4 @@ namespace BolsaFamilia.Application.Services
     }
 
 }
+

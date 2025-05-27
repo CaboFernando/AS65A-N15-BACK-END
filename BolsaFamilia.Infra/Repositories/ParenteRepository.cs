@@ -49,5 +49,11 @@ namespace BolsaFamilia.Infra.Repositories
             _context.Parentes.Remove(parent);
             await _context.SaveChangesAsync();
         }
+        public async Task<List<Parente>> ObterPorUsuarioIdAsync(int usuarioId)
+        {
+            return await _context.Parentes
+                .Where(p => p.UsuarioId == usuarioId)
+                .ToListAsync();
+        }
     }
 }
