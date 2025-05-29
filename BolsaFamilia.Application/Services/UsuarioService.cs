@@ -1,9 +1,11 @@
 ﻿using BolsaFamilia.Application.DTOs;
 using BolsaFamilia.Application.Interfaces;
+using BolsaFamilia.Application.Utils;
 using BolsaFamilia.Domain.Entities;
 using BolsaFamilia.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 
 namespace BolsaFamilia.Application.Services
 {
@@ -12,6 +14,7 @@ namespace BolsaFamilia.Application.Services
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ILogger<UsuarioService> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
+
 
         public UsuarioService(IUsuarioRepository usuarioRepository, ILogger<UsuarioService> logger, IHttpContextAccessor httpContextAccessor)
         {
@@ -24,10 +27,25 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
-                if (await _usuarioRepository.BuscarByCpf(dto.Cpf) != null)
+                if (!ValidadorUtils.CpfValido(dto.Cpf))
+                {
+                    _logger.LogWarning($"CPF inválido: {dto.Cpf}");
                     return false;
-                if (await _usuarioRepository.BuscarByEmail(dto.Email) != null)
+                }
+                if (!ValidadorUtils.EmailValido(dto.Email))
+                {
+                    _logger.LogWarning($"Email inválido: {dto.Email}");
                     return false;
+                }
+
+                if (await _usuarioRepository.BuscarByCpf(dto.Cpf) != null){
+                    _logger.LogWarning($"Usuário com CPF já cadastrado: {dto.Cpf}");
+                    return false;
+                }
+                if (await _usuarioRepository.BuscarByEmail(dto.Email) != null){
+                    _logger.LogWarning($"Usuário com Email já cadastrado: {dto.Email}");
+                    return false;
+                }
 
                 var user = MapToEntity(dto);
                 await _usuarioRepository.AdicionarAsync(user);
@@ -44,6 +62,16 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
+                if (!ValidadorUtils.CpfValido(dto.Cpf))
+                {
+                    _logger.LogWarning($"CPF inválido: {dto.Cpf}");
+                    return false;
+                }
+                if (!ValidadorUtils.EmailValido(dto.Email))
+                {
+                    _logger.LogWarning($"Email inválido: {dto.Email}");
+                    return false;
+                }
                 var user = await _usuarioRepository.BuscarByCpf(dto.Cpf);
                 if (user == null) return false;
 
@@ -75,6 +103,11 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
+                if (!ValidadorUtils.CpfValido(cpf))
+                {
+                    _logger.LogWarning($"CPF inválido: {cpf}");
+                    return null;
+                }
                 var user = await _usuarioRepository.BuscarByCpf(cpf);
                 return user == null ? null : MapToDto(user);
             }
@@ -117,6 +150,11 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
+                if (!ValidadorUtils.CpfValido(cpf))
+                {
+                    _logger.LogWarning($"CPF inválido: {cpf}");
+                    return false;
+                }
                 var user = await _usuarioRepository.BuscarByCpf(cpf);
                 if (user == null) return false;
 
