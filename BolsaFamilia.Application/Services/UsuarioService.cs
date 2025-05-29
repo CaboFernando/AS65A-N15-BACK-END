@@ -26,6 +26,8 @@ namespace BolsaFamilia.Application.Services
             {
                 if (await _usuarioRepository.BuscarByCpf(dto.Cpf) != null)
                     return false;
+                if (await _usuarioRepository.BuscarByEmail(dto.Email) != null)
+                    return false;
 
                 var user = MapToEntity(dto);
                 await _usuarioRepository.AdicionarAsync(user);
