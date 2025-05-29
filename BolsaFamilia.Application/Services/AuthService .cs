@@ -8,6 +8,7 @@ using BolsaFamilia.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
+using BolsaFamilia.Application.Utils;
 
 
 
@@ -26,6 +27,10 @@ namespace BolsaFamilia.Application.Services
 
         public async Task<string> AutenticarAsync(string email, string senha)
         {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(senha) || !ValidadorUtils.EmailValido(email))
+            {
+                return null;
+            }
             var user = await _usuarioRepository.BuscarByEmail(email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(senha, user.SenhaHash))
             {

@@ -1,5 +1,6 @@
 ﻿using BolsaFamilia.Application.DTOs;
 using BolsaFamilia.Application.Interfaces;
+using BolsaFamilia.Application.Utils;
 using BolsaFamilia.Domain.Entities;
 using BolsaFamilia.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -23,6 +24,12 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(dto.Cpf) && !ValidadorUtils.CpfValido(dto.Cpf))
+                {
+                    _logger.LogWarning($"CPF inválido: {dto.Cpf}");
+                    return false;
+                }
+
                 var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
                 if (loggedUserId == null)
                     return false;
@@ -47,6 +54,11 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(dto.Cpf) && !ValidadorUtils.CpfValido(dto.Cpf))
+                {
+                    _logger.LogWarning($"CPF inválido: {dto.Cpf}");
+                    return false;
+                }
                 var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
                 if (loggedUserId == null)
                     return false;
@@ -78,6 +90,11 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(cpf) || !ValidadorUtils.CpfValido(cpf))
+                {
+                    _logger.LogWarning($"CPF inválido: {cpf}");
+                    return null;
+                }
                 var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
 
                 var parent = await _parenteRepository.BuscarByCpf(cpf, (int)loggedUserId);
@@ -110,6 +127,11 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(cpf) || !ValidadorUtils.CpfValido(cpf))
+                {
+                    _logger.LogWarning($"CPF inválido: {cpf}");
+                    return false;
+                }
                 var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
 
                 var parent = await _parenteRepository.BuscarByCpf(cpf, (int)loggedUserId);
