@@ -1,6 +1,5 @@
 using BolsaFamilia.Application.DTOs;
 using BolsaFamilia.Application.Interfaces;
-using BolsaFamilia.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -34,23 +33,48 @@ namespace BolsaFamilia.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ParenteDto dto)
+        public async Task<IActionResult> Create([FromBody] ParenteInputDto input)
         {
+            var dto = new ParenteDto
+            {
+                Nome = input.Nome,
+                Cpf = input.Cpf,
+                GrauParentesco = input.GrauParentesco,
+                Sexo = input.Sexo,
+                EstadoCivil = input.EstadoCivil,
+                Ocupacao = input.Ocupacao,
+                Telefone = input.Telefone,
+                Renda = input.Renda
+            };
+
             var success = await _parentesService.AdicionarAsync(dto);
             return success ? Ok("Parente cadastrado com sucesso!") : BadRequest("Erro ao criar parente.");
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] ParenteDto dto)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] ParenteInputDto input)
         {
+            var dto = new ParenteDto
+            {
+                Id = id,
+                Nome = input.Nome,
+                Cpf = input.Cpf,
+                GrauParentesco = input.GrauParentesco,
+                Sexo = input.Sexo,
+                EstadoCivil = input.EstadoCivil,
+                Ocupacao = input.Ocupacao,
+                Telefone = input.Telefone,
+                Renda = input.Renda
+            };
+
             var success = await _parentesService.AtualizarAsync(dto);
             return success ? Ok("Parente atualizado com sucesso!") : BadRequest("Erro ao atualizar parente.");
         }
 
-        [HttpDelete("{cpf}")]
-        public async Task<IActionResult> Remove(string cpf)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Remove(int id)
         {
-            var success = await _parentesService.RemoverAsync(cpf);
+            var success = await _parentesService.RemoverAsync(id);
             return success ? Ok("Parente removido com sucesso!") : BadRequest("Erro ao remover parente.");
         }
 
@@ -61,5 +85,4 @@ namespace BolsaFamilia.API.Controllers
             return Ok(rendaDto);
         }
     }
-
 }

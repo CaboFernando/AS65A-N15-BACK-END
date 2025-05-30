@@ -41,25 +41,41 @@ namespace BolsaFamilia.API.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] UsuarioDto dto)
+        public async Task<IActionResult> Create([FromBody] UsuarioInputDto input)
         {
+            var dto = new UsuarioDto
+            {
+                Nome = input.Nome,
+                Cpf = input.Cpf,
+                Email = input.Email,
+                Senha = input.Senha
+            };
+
             var success = await _usuarioService.AdicionarAsync(dto);
             return success ? Ok("Usuário cadastrado com sucesso!") : BadRequest("Erro ao criar usuário.");
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UsuarioDto dto)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UsuarioInputDto input)
         {
+            var dto = new UsuarioDto
+            {
+                Id = id,
+                Nome = input.Nome,
+                Cpf = input.Cpf,
+                Email = input.Email,
+                Senha = input.Senha
+            };
+
             var success = await _usuarioService.AtualizarAsync(dto);
             return success ? Ok("Usuário atualizado com sucesso!") : BadRequest("Erro ao atualizar usuário.");
         }
 
-        [HttpDelete("{cpf}")]
-        public async Task<IActionResult> Remove(string cpf)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Remove(int id)
         {
-            var success = await _usuarioService.RemoverAsync(cpf);
+            var success = await _usuarioService.RemoverAsync(id);
             return success ? Ok("Usuário removido com sucesso!") : BadRequest("Erro ao remover usuário.");
         }
     }
-
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -5,8 +6,7 @@ namespace BolsaFamilia.Application.Utils
 {
     public static class ValidadorUtils
     {
-        private static readonly Regex cpfRegex = new Regex(@"^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$");
-
+        private static readonly Regex cpfRegex = new Regex(@"^\d{11}$");
         private static readonly Regex emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
 
         public static bool CpfValido(string cpf)
@@ -14,12 +14,15 @@ namespace BolsaFamilia.Application.Utils
             if (string.IsNullOrWhiteSpace(cpf))
                 return false;
 
+            cpf = new string(cpf.Where(char.IsDigit).ToArray());
+
             if (!cpfRegex.IsMatch(cpf))
                 return false;
 
-            cpf = new string(cpf.Where(char.IsDigit).ToArray());
+            if (cpf.Length != 11)
+                return false;
 
-            if (cpf.Length != 11 || cpf.Distinct().Count() == 1)
+            if (cpf.Distinct().Count() == 1)
                 return false;
 
             int[] multiplicador1 = { 10, 9, 8, 7, 6, 5, 4, 3, 2 };

@@ -5,7 +5,6 @@ using BolsaFamilia.Domain.Entities;
 using BolsaFamilia.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 
 namespace BolsaFamilia.Application.Services
 {
@@ -14,7 +13,6 @@ namespace BolsaFamilia.Application.Services
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ILogger<UsuarioService> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
 
         public UsuarioService(IUsuarioRepository usuarioRepository, ILogger<UsuarioService> logger, IHttpContextAccessor httpContextAccessor)
         {
@@ -38,11 +36,13 @@ namespace BolsaFamilia.Application.Services
                     return false;
                 }
 
-                if (await _usuarioRepository.BuscarByCpf(dto.Cpf) != null){
+                if (await _usuarioRepository.BuscarByCpf(dto.Cpf) != null)
+                {
                     _logger.LogWarning($"Usuário com CPF já cadastrado: {dto.Cpf}");
                     return false;
                 }
-                if (await _usuarioRepository.BuscarByEmail(dto.Email) != null){
+                if (await _usuarioRepository.BuscarByEmail(dto.Email) != null)
+                {
                     _logger.LogWarning($"Usuário com Email já cadastrado: {dto.Email}");
                     return false;
                 }
@@ -62,15 +62,22 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
+                if (!ValidadorUtils.CpfValido(dto.Cpf))
+                {
+                    _logger.LogWarning($"CPF inválido: {dto.Cpf}");
+                    return false;
+                }
                 if (!ValidadorUtils.EmailValido(dto.Email))
                 {
                     _logger.LogWarning($"Email inválido: {dto.Email}");
                     return false;
                 }
-                var user = await _usuarioRepository.BuscarByCpf(dto.Cpf);
+                
+                var user = await _usuarioRepository.BuscarById(dto.Id);
                 if (user == null) return false;
 
                 user.Nome = dto.Nome;
+                user.Cpf = dto.Cpf;
                 user.Email = dto.Email;
                 user.SenhaHash = HashPassword(dto.Senha);
                 await _usuarioRepository.AtualizarAsync(user);
@@ -78,7 +85,7 @@ namespace BolsaFamilia.Application.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao atualizar o usuário cpf: {dto.Cpf}");
+                _logger.LogError(ex, $"Erro ao atualizar o usuário id: {dto.Id}");
                 return false;
             }
         }
@@ -141,16 +148,11 @@ namespace BolsaFamilia.Application.Services
             }
         }
 
-        public async Task<bool> RemoverAsync(string cpf)
+        public async Task<bool> RemoverAsync(int id)
         {
             try
-            {
-                if (!ValidadorUtils.CpfValido(cpf))
-                {
-                    _logger.LogWarning($"CPF inválido: {cpf}");
-                    return false;
-                }
-                var user = await _usuarioRepository.BuscarByCpf(cpf);
+            {                
+                var user = await _usuarioRepository.BuscarById(id);
                 if (user == null) return false;
 
                 await _usuarioRepository.RemoverAsync(user);
@@ -158,7 +160,7 @@ namespace BolsaFamilia.Application.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao remover o usuário cpf: {cpf}");
+                _logger.LogError(ex, $"Erro ao remover o usuário id: {id}");
                 return false;
             }
         }
@@ -173,6 +175,7 @@ namespace BolsaFamilia.Application.Services
 
         private UsuarioDto MapToDto(Usuario usuario) => new UsuarioDto
         {
+            Id = usuario.Id,
             Nome = usuario.Nome,
             Cpf = usuario.Cpf,
             Email = usuario.Email,
@@ -182,5 +185,4 @@ namespace BolsaFamilia.Application.Services
         private string HashPassword(string senha) =>
             BCrypt.Net.BCrypt.HashPassword(senha);
     }
-
 }

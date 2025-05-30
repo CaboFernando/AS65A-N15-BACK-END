@@ -53,12 +53,18 @@ namespace BolsaFamilia.Application.Services
         public async Task<bool> AtualizarAsync(ParenteDto dto)
         {
             try
-            {                
+            {
+                if (!ValidadorUtils.CpfValido(dto.Cpf))
+                {
+                    _logger.LogWarning($"CPF inválido: {dto.Cpf}");
+                    return false;
+                }
+
                 var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
                 if (loggedUserId == null)
                     return false;
 
-                var parent = await _parenteRepository.BuscarByCpf(dto.Cpf, (int)loggedUserId);
+                var parent = await _parenteRepository.BuscarById(dto.Id, (int)loggedUserId);
                 if (parent == null) return false;
 
                 parent.Nome = dto.Nome;
@@ -76,7 +82,7 @@ namespace BolsaFamilia.Application.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao atualizar o membro familiar cpf: {dto.Cpf}");
+                _logger.LogError(ex, $"Erro ao atualizar o membro familiar id: {dto.Id}");
                 return false;
             }
         }
@@ -118,18 +124,13 @@ namespace BolsaFamilia.Application.Services
             }
         }
 
-        public async Task<bool> RemoverAsync(string cpf)
+        public async Task<bool> RemoverAsync(int id)
         {
             try
-            {
-                if (!ValidadorUtils.CpfValido(cpf))
-                {
-                    _logger.LogWarning($"CPF inválido: {cpf}");
-                    return false;
-                }
+            {                
                 var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
 
-                var parent = await _parenteRepository.BuscarByCpf(cpf, (int)loggedUserId);
+                var parent = await _parenteRepository.BuscarById(id, (int)loggedUserId);
                 if (parent == null) return false;
 
                 await _parenteRepository.RemoverAsync(parent);
@@ -137,7 +138,7 @@ namespace BolsaFamilia.Application.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao remover o membro familiar cpf: {cpf}");
+                _logger.LogError(ex, $"Erro ao remover o membro familiar id: {id}");
                 return false;
             }
         }
@@ -169,6 +170,7 @@ namespace BolsaFamilia.Application.Services
 
         private Parente MapToEntity(ParenteDto dto) => new Parente
         {
+            Id = dto.Id,
             Nome = dto.Nome,
             GrauParentesco = dto.GrauParentesco,
             Sexo = dto.Sexo,
@@ -181,6 +183,7 @@ namespace BolsaFamilia.Application.Services
 
         private ParenteDto MapToDto(Parente parente) => new ParenteDto
         {
+            Id = parente.Id,
             Nome = parente.Nome,
             GrauParentesco = parente.GrauParentesco,
             Sexo = parente.Sexo,
