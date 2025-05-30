@@ -14,7 +14,7 @@ namespace BolsaFamilia.Application.Interfaces
         Task<ParenteDto> BuscarByCpf(string cpf);
         Task<bool> AdicionarAsync(ParenteDto dto);
         Task<bool> AtualizarAsync(ParenteDto dto);
-        Task<bool> RemoverAsync(string cpf);
+        Task<bool> RemoverAsync(int id);
         Task<RendaDto> CalcularRendaFamiliarAsync();
     }
 }

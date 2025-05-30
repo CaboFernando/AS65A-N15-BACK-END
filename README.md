@@ -1,4 +1,3 @@
-
 # 📦 BolsaFamilia API
 
 Este repositório contém o código-fonte da Web API desenvolvida em .NET Core 8 para gerenciamento de usuários e seus respectivos membros familiares (parentes) no contexto do programa Bolsa Família. A aplicação utiliza autenticação via JWT, Entity Framework Core, arquitetura DDD, e documentação via Swagger.
@@ -9,13 +8,11 @@ Este repositório contém o código-fonte da Web API desenvolvida em .NET Core 8
 
 ### Como autenticar?
 
-1. Realize o login com o endpoint:
+Realize o login com o endpoint:
 
 ```
-
 POST /api/Auths/login
-
-````
+```
 
 **Body (JSON):**
 
@@ -24,9 +21,9 @@ POST /api/Auths/login
   "email": "teste@gmail.com",
   "senha": "suaSenha"
 }
-````
+```
 
-2. O retorno será um **token JWT**. Exemplo:
+O retorno será um token JWT. Exemplo:
 
 ```json
 {
@@ -34,7 +31,7 @@ POST /api/Auths/login
 }
 ```
 
-3. No Swagger (ou nas requisições via Postman/curl), clique em **Authorize** e insira o token no formato:
+No Swagger (ou nas requisições via Postman/curl), clique em **Authorize** e insira o token no formato:
 
 ```
 Bearer {seu_token}
@@ -83,13 +80,13 @@ Cadastra um novo usuário.
 }
 ```
 
-#### `PUT /api/Usuarios`
+#### `PUT /api/Usuarios/{id}`
 
-Atualiza os dados de um usuário existente.
+Atualiza os dados de um usuário existente, identificado pelo ID na rota.
 
-#### `DELETE /api/Usuarios/{cpf}`
+#### `DELETE /api/Usuarios/{id}`
 
-Remove um usuário com base no CPF informado na rota.
+Remove um usuário com base no id informado na rota.
 
 ---
 
@@ -116,21 +113,21 @@ Cadastra um novo parente vinculado ao usuário autenticado.
   "nome": "Maria da Silva",
   "cpf": "98765432100",
   "grauParentesco": "Mae",
-  "sexo": 2, //<-- Feminino
-  "estadoCivil": 2, //<--Casado
+  "sexo": 2,
+  "estadoCivil": 2,
   "ocupacao": "Professora",
   "telefone": "(11) 91234-5678",
   "renda": 2300.00
 }
 ```
 
-#### `PUT /api/Parentes`
+#### `PUT /api/Parentes/{id}`
 
-Atualiza os dados de um parente (identificado pelo CPF no body).
+Atualiza os dados de um parente existente, identificado pelo ID na rota.
 
-#### `DELETE /api/Parentes/{cpf}`
+#### `DELETE /api/Parentes/{id}`
 
-Remove um parente com base no CPF informado.
+Remove um parente com base no id informado.
 
 #### `GET /api/Parentes/renda`
 
@@ -144,21 +141,21 @@ Os campos `sexo` e `estadoCivil` devem ser enviados como **inteiro** no JSON, co
 
 ### 🎭 Sexo
 
-| Valor (string) | Código         |
-| -------------- | -------------- |
-| "Masculino"    | 1              |
-| "Feminino"     | 2              |
-| "Outro"        | 3              |
+| Valor (string) | Código |
+|----------------|--------|
+| "Masculino"    | 1      |
+| "Feminino"     | 2      |
+| "Outro"        | 3      |
 
 ### 💍 Estado Civil
 
-| Valor (string) | Código         |
-| -------------- | -------------- |
-| "Solteiro"     | 1              |
-| "Casado"       | 2              |
-| "Divorciado"   | 3              |
-| "Viuvo"        | 4              |
-| "UniaoEstavel" | 5              |
+| Valor (string)  | Código |
+|-----------------|--------|
+| "Solteiro"      | 1      |
+| "Casado"        | 2      |
+| "Divorciado"    | 3      |
+| "Viuvo"         | 4      |
+| "UniaoEstavel"  | 5      |
 
 > ⚠️ **Atenção:** os valores devem ser enviados com **código exato** no corpo da requisição. Exemplo:
 
@@ -187,22 +184,19 @@ No `appsettings.json`, configure as informações do JWT:
 
 ## 🚀 Tecnologias Usadas
 
-* ASP.NET Core 8
-* Entity Framework Core
-* Swagger (Swashbuckle)
-* JWT Bearer Authentication
-* SQL Server
-* DDD (Domain-Driven Design)
+- ASP.NET Core 8
+- Entity Framework Core
+- Swagger (Swashbuckle)
+- JWT Bearer Authentication
+- SQL Server
+- DDD (Domain-Driven Design)
 
 ---
 
 ## 👥 Membros do Grupo
 
-* André Faria De Souza - RA 2101106
-* Beatriz Aparecida Banaki De Campos - RA 2210533
-* Carlos Fernando Dos Santos - RA 1692984
-* Rafael De Palma Francisco - RA 2465248
-* Sarah Kelly Almeida - RA 1842293
-
-```
-
+- André Faria De Souza - RA 2101106
+- Beatriz Aparecida Banaki De Campos - RA 2210533
+- Carlos Fernando Dos Santos - RA 1692984
+- Rafael De Palma Francisco - RA 2465248
+- Sarah Kelly Almeida - RA 1842293

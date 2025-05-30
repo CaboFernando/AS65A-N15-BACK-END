@@ -7,9 +7,8 @@ using BolsaFamilia.Domain.Enums;
 
 namespace BolsaFamilia.Application.DTOs
 {
-    public class ParenteDto
+    public class ParenteInputDto
     {
-        public int Id { get; set; }
         public string Nome { get; set; }
         public string GrauParentesco { get; set; }
         public Sexo Sexo { get; set; }
