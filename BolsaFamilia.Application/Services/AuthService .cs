@@ -27,7 +27,7 @@ namespace BolsaFamilia.Application.Services
 
         public async Task<string> AutenticarAsync(string email, string senha)
         {
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(senha) || !ValidadorUtils.EmailValido(email))
+            if (string.IsNullOrWhiteSpace(senha) || !ValidadorUtils.EmailValido(email))
             {
                 return null;
             }

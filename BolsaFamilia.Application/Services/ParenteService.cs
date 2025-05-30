@@ -24,7 +24,7 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(dto.Cpf) || !ValidadorUtils.CpfValido(dto.Cpf))
+                if (!ValidadorUtils.CpfValido(dto.Cpf))
                 {
                     _logger.LogWarning($"CPF inválido: {dto.Cpf}");
                     return false;
@@ -54,7 +54,7 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(dto.Cpf) || !ValidadorUtils.CpfValido(dto.Cpf))
+                if (!ValidadorUtils.CpfValido(dto.Cpf))
                 {
                     _logger.LogWarning($"CPF inválido: {dto.Cpf}");
                     return false;
@@ -90,7 +90,7 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(cpf) || !ValidadorUtils.CpfValido(cpf))
+                if (!ValidadorUtils.CpfValido(cpf))
                 {
                     _logger.LogWarning($"CPF inválido: {cpf}");
                     return null;
@@ -127,7 +127,7 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(cpf) || !ValidadorUtils.CpfValido(cpf))
+                if (!ValidadorUtils.CpfValido(cpf))
                 {
                     _logger.LogWarning($"CPF inválido: {cpf}");
                     return false;
