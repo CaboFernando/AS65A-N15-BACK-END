@@ -53,12 +53,7 @@ namespace BolsaFamilia.Application.Services
         public async Task<bool> AtualizarAsync(ParenteDto dto)
         {
             try
-            {
-                if (!ValidadorUtils.CpfValido(dto.Cpf))
-                {
-                    _logger.LogWarning($"CPF inválido: {dto.Cpf}");
-                    return false;
-                }
+            {                
                 var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
                 if (loggedUserId == null)
                     return false;

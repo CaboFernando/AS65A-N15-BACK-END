@@ -62,11 +62,6 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
-                if (!ValidadorUtils.CpfValido(dto.Cpf))
-                {
-                    _logger.LogWarning($"CPF inválido: {dto.Cpf}");
-                    return false;
-                }
                 if (!ValidadorUtils.EmailValido(dto.Email))
                 {
                     _logger.LogWarning($"Email inválido: {dto.Email}");
