@@ -9,6 +9,9 @@ namespace BolsaFamilia.Domain.Enums
 {
     public enum Sexo
     {
+        [Description("Não Informado")]
+        NaoInformado = 0,
+
         [Description("Masculino")]
         Masculino = 1,
 

@@ -2,6 +2,7 @@
 using BolsaFamilia.Application.Interfaces;
 using BolsaFamilia.Application.Utils;
 using BolsaFamilia.Domain.Entities;
+using BolsaFamilia.Domain.Enums;
 using BolsaFamilia.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -10,15 +11,17 @@ namespace BolsaFamilia.Application.Services
 {
     public class UsuarioService : IUsuarioService
     {
-        private readonly IUsuarioRepository _usuarioRepository;
-        private readonly ILogger<UsuarioService> _logger;
+        private readonly IUsuarioRepository _usuarioRepository;        
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IParenteRepository _parenteRepository;
+        private readonly ILogger<UsuarioService> _logger;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository, ILogger<UsuarioService> logger, IHttpContextAccessor httpContextAccessor)
+        public UsuarioService(IUsuarioRepository usuarioRepository, IHttpContextAccessor httpContextAccessor, IParenteRepository parenteRepository, ILogger<UsuarioService> logger)
         {
-            _usuarioRepository = usuarioRepository;
-            _logger = logger;
+            _usuarioRepository = usuarioRepository;            
             _httpContextAccessor = httpContextAccessor;
+            _parenteRepository = parenteRepository;
+            _logger = logger;
         }
 
         public async Task<bool> AdicionarAsync(UsuarioDto dto)
@@ -49,6 +52,24 @@ namespace BolsaFamilia.Application.Services
 
                 var user = MapToEntity(dto);
                 await _usuarioRepository.AdicionarAsync(user);
+
+                var UserByCpf = await _usuarioRepository.BuscarByCpf(dto.Cpf);
+
+                var parenteTitular = new Parente
+                {
+                    Nome = dto.Nome,
+                    GrauParentesco = "Responsável",
+                    Sexo = Sexo.NaoInformado,
+                    EstadoCivil = EstadoCivil.NaoInformado,
+                    Cpf = dto.Cpf, 
+                    Ocupacao = "",
+                    Telefone = "00000000000",
+                    Renda = 0, 
+                    
+                    UsuarioId = UserByCpf.Id
+                };
+                await _parenteRepository.AdicionarAsync(parenteTitular);
+
                 return true;
             }
             catch (Exception ex)

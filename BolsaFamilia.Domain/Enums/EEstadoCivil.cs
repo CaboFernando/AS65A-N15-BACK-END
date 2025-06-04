@@ -9,6 +9,9 @@ namespace BolsaFamilia.Domain.Enums
 {
     public enum EstadoCivil
     {
+        [Description("Não Informado")]
+        NaoInformado = 0,
+
         [Description("Solteiro")]
         Solteiro = 1,
 
