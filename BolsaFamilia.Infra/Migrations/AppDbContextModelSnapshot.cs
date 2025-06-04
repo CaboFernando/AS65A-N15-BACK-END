@@ -38,7 +38,7 @@ namespace BolsaFamilia.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InfoGerais");
+                    b.ToTable("InfoGerais", (string)null);
                 });
 
             modelBuilder.Entity("BolsaFamilia.Domain.Entities.Parente", b =>
@@ -85,7 +85,7 @@ namespace BolsaFamilia.Infra.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Parentes");
+                    b.ToTable("Parentes", (string)null);
                 });
 
             modelBuilder.Entity("BolsaFamilia.Domain.Entities.Usuario", b =>
@@ -122,7 +122,7 @@ namespace BolsaFamilia.Infra.Migrations
                     b.HasIndex("Cpf")
                         .IsUnique();
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", (string)null);
                 });
 
             modelBuilder.Entity("BolsaFamilia.Domain.Entities.Parente", b =>

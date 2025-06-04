@@ -11,15 +11,5 @@ namespace BolsaFamilia.Domain.Entities
         public int Id { get; set; }
         public decimal ValorBaseRendaPerCapita { get; set; }
         public string TiposParentescoPermitidos { get; set; }
-                
-
-        public List<string> ObterListaParentescos()
-        {
-            if (string.IsNullOrWhiteSpace(TiposParentescoPermitidos))
-            {
-                return new List<string>();
-            }
-            return TiposParentescoPermitidos.Split(',').Select(p => p.Trim()).ToList();
-        }
     }
 }
