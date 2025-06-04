@@ -19,6 +19,7 @@ namespace BolsaFamilia.API.Controllers
         }
 
         [HttpGet]
+        [EndpointDescription("Listar todos os parentes cadastrados pelo usuário logado.")]
         public async Task<IActionResult> GetAll()
         {
             var result = await _parentesService.ListarTodos();
@@ -26,6 +27,7 @@ namespace BolsaFamilia.API.Controllers
         }
 
         [HttpGet("cpf/{cpf}")]
+        [EndpointDescription("Listar o parente cadastrado pelo usuário logado, filtrado pelo CPF.")]
         public async Task<IActionResult> GetByCpf(string cpf)
         {
             var result = await _parentesService.BuscarByCpf(cpf);
@@ -33,6 +35,7 @@ namespace BolsaFamilia.API.Controllers
         }
 
         [HttpPost]
+        [EndpointDescription("Cadastra um parente, vinculado pelo usuário logado.")]
         public async Task<IActionResult> Create([FromBody] ParenteInputDto input)
         {
             var dto = new ParenteDto
@@ -52,6 +55,7 @@ namespace BolsaFamilia.API.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [EndpointDescription("Atualiza um parente cadastrado pelo usuário logado, filtrado pelo ID.")]
         public async Task<IActionResult> Update(int id, [FromBody] ParenteInputDto input)
         {
             var dto = new ParenteDto
@@ -72,6 +76,7 @@ namespace BolsaFamilia.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [EndpointDescription("Remove um parente cadastrado pelo usuário logado, filtrado pelo ID.")]
         public async Task<IActionResult> Remove(int id)
         {
             var success = await _parentesService.RemoverAsync(id);
@@ -79,6 +84,7 @@ namespace BolsaFamilia.API.Controllers
         }
 
         [HttpGet("renda")]
+        [EndpointDescription("Calcula a renda familiar com base nos parentes cadastrados pelo usuário logado.")]
         public async Task<IActionResult> CalcularRenda()
         {
             var rendaDto = await _parentesService.CalcularRendaFamiliarAsync();

@@ -20,6 +20,7 @@ namespace BolsaFamilia.API.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
+        [EndpointDescription("[SOMENTE PARA USUÁRIO ADM] Listar todos os usuários cadastrados.")]
         public async Task<IActionResult> GetAll()
         {
             var result = await _usuarioService.ListarTodos();
@@ -28,6 +29,7 @@ namespace BolsaFamilia.API.Controllers
 
         [HttpGet("{id:int}")]
         [Authorize(Roles = "Admin")]
+        [EndpointDescription("[SOMENTE PARA USUÁRIO ADM] Listar um usuário cadastrados filtrado por ID.")]
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _usuarioService.BuscarById(id);
@@ -36,6 +38,7 @@ namespace BolsaFamilia.API.Controllers
 
         [HttpGet("cpf/{cpf}")]
         [Authorize(Roles = "Admin")]
+        [EndpointDescription("[SOMENTE PARA USUÁRIO ADM] Listar um usuário cadastrados filtrado por CPF.")]
         public async Task<IActionResult> GetByCpf(string cpf)
         {
             var result = await _usuarioService.BuscarByCpf(cpf);
@@ -44,6 +47,7 @@ namespace BolsaFamilia.API.Controllers
 
         [AllowAnonymous]
         [HttpPost]
+        [EndpointDescription("Cadastra um usuário.")]
         public async Task<IActionResult> Create([FromBody] UsuarioInputDto input)
         {
             var dto = new UsuarioDto
@@ -59,6 +63,7 @@ namespace BolsaFamilia.API.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [EndpointDescription("Altera um usuário cadastrados filtrado por ID.")]
         public async Task<IActionResult> Update(int id, [FromBody] UsuarioInputDto input)
         {
             var dto = new UsuarioDto
@@ -76,6 +81,7 @@ namespace BolsaFamilia.API.Controllers
 
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Admin")]
+        [EndpointDescription("[SOMENTE PARA USUÁRIO ADM] Remove um usuário cadastrados filtrado por ID.")]
         public async Task<IActionResult> Remove(int id)
         {
             var success = await _usuarioService.RemoverAsync(id);
