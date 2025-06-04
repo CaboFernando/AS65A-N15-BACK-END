@@ -33,7 +33,10 @@ namespace BolsaFamilia.Infra.Repositories
 
         public async Task<Usuario> BuscarByCpf(string cpf)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(s => s.Cpf == cpf);
+            return await _context.Usuarios
+                .Include(u => u.Parentes)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(s => s.Cpf == cpf);
         }
 
         public async Task<Usuario> BuscarByEmail(string email)
@@ -44,12 +47,18 @@ namespace BolsaFamilia.Infra.Repositories
 
         public async Task<Usuario> BuscarById(int id)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.Usuarios
+                .Include(u => u.Parentes)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<IEnumerable<Usuario>> ListarTodos()
         {
-            return await _context.Usuarios.ToListAsync();
+            return await _context.Usuarios
+                .Include(u => u.Parentes)
+                .AsSplitQuery()
+                .ToListAsync();
         }
 
         public async Task RemoverAsync(Usuario user)

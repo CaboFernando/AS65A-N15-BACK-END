@@ -62,6 +62,12 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
+                var loggedUserId = await BuscarUsuarioLogadoIdAsync();
+                if (loggedUserId != dto.Id)
+                {
+                    _logger.LogWarning($"O usuário logado e o usuário a ser alterado são diferentes. Só é possível alterar o próprio cadastro");
+                    return false;
+                }
                 if (!ValidadorUtils.CpfValido(dto.Cpf))
                 {
                     _logger.LogWarning($"CPF inválido: {dto.Cpf}");
@@ -179,7 +185,19 @@ namespace BolsaFamilia.Application.Services
             Nome = usuario.Nome,
             Cpf = usuario.Cpf,
             Email = usuario.Email,
-            Senha = usuario.SenhaHash
+            Senha = usuario.SenhaHash,
+            Parentes = usuario.Parentes.Select(p => new ParenteDto
+            {
+                Id = p.Id,
+                Nome = p.Nome,
+                GrauParentesco = p.GrauParentesco,
+                Sexo = p.Sexo,
+                EstadoCivil = p.EstadoCivil,
+                Cpf = p.Cpf,
+                Ocupacao = p.Ocupacao,
+                Telefone = p.Telefone,
+                Renda = p.Renda
+            }).ToList()
         };
 
         private string HashPassword(string senha) =>

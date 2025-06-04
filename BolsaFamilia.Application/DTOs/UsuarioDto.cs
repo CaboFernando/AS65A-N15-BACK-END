@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BolsaFamilia.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,7 @@ namespace BolsaFamilia.Application.DTOs
         public string Cpf { get; set; }
         public string Email { get; set; }
         public string Senha { get; set; }
+
+        public ICollection<ParenteDto> Parentes { get; set; } = new List<ParenteDto>();
     }
 }

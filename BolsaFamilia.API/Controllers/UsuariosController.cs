@@ -19,6 +19,7 @@ namespace BolsaFamilia.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll()
         {
             var result = await _usuarioService.ListarTodos();
@@ -26,6 +27,7 @@ namespace BolsaFamilia.API.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _usuarioService.BuscarById(id);
@@ -33,6 +35,7 @@ namespace BolsaFamilia.API.Controllers
         }
 
         [HttpGet("cpf/{cpf}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetByCpf(string cpf)
         {
             var result = await _usuarioService.BuscarByCpf(cpf);
@@ -72,6 +75,7 @@ namespace BolsaFamilia.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Remove(int id)
         {
             var success = await _usuarioService.RemoverAsync(id);
