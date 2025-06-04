@@ -12,6 +12,8 @@ namespace BolsaFamilia.Infra.Data
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Parente> Parentes { get; set; }
+        public DbSet<InfoGerais> InfoGerais { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

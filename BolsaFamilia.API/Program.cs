@@ -89,11 +89,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 //Repositories
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IParenteRepository, ParenteRepository>();
+builder.Services.AddScoped<IInfoGeraisRepository, InfoGeraisRepository>();
 
 //Services
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IParenteService, ParenteService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IInfoGeraisService, InfoGeraisService>();
 
 var app = builder.Build();
 
