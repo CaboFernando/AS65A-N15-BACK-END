@@ -222,7 +222,7 @@ A seguir, a lista detalhada dos endpoints disponíveis, agrupados por controlado
 *   **`GET /renda`**
     *   **Descrição:** Calcula a renda familiar com base nos parentes cadastrados pelo usuário logado.
     *   **Acesso:** Requer Autenticação.
-    *   **Retorno (Sucesso):** Objeto com informações da renda familiar (verificar DTO de retorno específico, ex: `RendaFamiliarDto`).
+    *   **Retorno (Sucesso):** Retorna uma mensagem informando se o grupo familiar é ou não é elegível para o programa Bolsa Família.
 
 ### ⚙️ AdminController (`/api/Admin`)
 
