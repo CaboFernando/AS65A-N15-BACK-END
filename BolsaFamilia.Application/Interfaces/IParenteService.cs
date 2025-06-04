@@ -15,6 +15,6 @@ namespace BolsaFamilia.Application.Interfaces
         Task<bool> AdicionarAsync(ParenteDto dto);
         Task<bool> AtualizarAsync(ParenteDto dto);
         Task<bool> RemoverAsync(int id);
-        Task<RendaDto> CalcularRendaFamiliarAsync();
+        Task<string> CalcularRendaFamiliarAsync();
     }
 }

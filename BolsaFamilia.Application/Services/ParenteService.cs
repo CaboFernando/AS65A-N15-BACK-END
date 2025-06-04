@@ -9,15 +9,17 @@ namespace BolsaFamilia.Application.Services
 {
     public class ParenteService : IParenteService
     {
-        private readonly IParenteRepository _parenteRepository;
-        private readonly ILogger<ParenteService> _logger;
+        private readonly IParenteRepository _parenteRepository;        
         private readonly IUsuarioService _usuarioService;
+        private readonly ICalculaRendaService _calculaRendaService;
+        private readonly ILogger<ParenteService> _logger;
 
-        public ParenteService(IParenteRepository parenteRepository, ILogger<ParenteService> logger, IUsuarioService usuarioService)
+        public ParenteService(IParenteRepository parenteRepository, IUsuarioService usuarioService, ICalculaRendaService calculaRendaService, ILogger<ParenteService> logger)
         {
-            _parenteRepository = parenteRepository;
-            _logger = logger;
+            _parenteRepository = parenteRepository;            
             _usuarioService = usuarioService;
+            _calculaRendaService = calculaRendaService;
+            _logger = logger;
         }
 
         public async Task<bool> AdicionarAsync(ParenteDto dto)
@@ -143,29 +145,19 @@ namespace BolsaFamilia.Application.Services
             }
         }
 
-        public async Task<RendaDto> CalcularRendaFamiliarAsync()
+        public async Task<string> CalcularRendaFamiliarAsync()
         {
             var usuarioId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
             if (usuarioId == null)
             {
-                return new RendaDto
-                {
-                    RendaTotal = 0,
-                    RendaPerCapita = 0,
-                    TemDireito = false
-                };
+                return "Usuário não encontrado ou não está logado.";
             }
 
-            var parentes = await _parenteRepository.ListarTodos((int)usuarioId);
-            var rendaTotal = parentes.Sum(p => p.Renda);
-            var rendaPerCapita = parentes.Any() ? rendaTotal / parentes.Count() : 0;
+            var result = await _calculaRendaService.VerificarElegibilidadeBolsaFamiliaAsync((int)usuarioId);
 
-            return new RendaDto
-            {
-                RendaTotal = rendaTotal,
-                RendaPerCapita = rendaPerCapita,
-                TemDireito = rendaPerCapita <= 218
-            };
+            return result ? 
+                "De acordo com o cálculo dos parentes cadastrado para o usuário logado, o grupo familiar é SIM elegível para o programa Bolsa Família" 
+                : "De acordo com o cálculo dos parentes cadastrado para o usuário logado, o grupo familiar é NÃO elegível para o programa Bolsa Família";            
         }
 
         private Parente MapToEntity(ParenteDto dto) => new Parente

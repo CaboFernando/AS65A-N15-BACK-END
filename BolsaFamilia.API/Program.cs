@@ -96,6 +96,7 @@ builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IParenteService, ParenteService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IInfoGeraisService, InfoGeraisService>();
+builder.Services.AddScoped<ICalculaRendaService, CalculaRendaService>();
 
 var app = builder.Build();
 
