@@ -96,6 +96,33 @@ namespace BolsaFamilia.Application.Services
             }
         }
 
+        public async Task<bool> AtualizarSenhaAsync(PasswordInputDto dto)
+        {
+            try
+            {
+                var user = await _usuarioRepository.BuscarByCpf(dto.Cpf);
+                if (user == null)
+                {
+                    _logger.LogWarning($"O CPF informado não foi encontrado na base de dados: {dto.Cpf}");
+                    return false;
+                }
+                if (!user.Email.Equals(dto.Email))
+                {
+                    _logger.LogWarning($"O CPF informado não foi confere com o CPF do email informado: CPF {dto.Cpf}, Email {dto.Email}");
+                    return false;
+                }
+
+                user.SenhaHash = HashPassword(dto.NovaSenha);
+                await _usuarioRepository.AtualizarAsync(user);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao alterar a senha do usuário CPF: {dto.Cpf}");
+                return false;
+            }
+        }
+
         public async Task<int?> BuscarUsuarioLogadoIdAsync()
         {
             var userIdClaim = _httpContextAccessor.HttpContext?.User?

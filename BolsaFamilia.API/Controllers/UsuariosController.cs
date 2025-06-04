@@ -79,6 +79,15 @@ namespace BolsaFamilia.API.Controllers
             return success ? Ok("Usuário atualizado com sucesso!") : BadRequest("Erro ao atualizar usuário.");
         }
 
+        [AllowAnonymous]
+        [HttpPut("AlterarSenha")]
+        [EndpointDescription("Valida por CPF e Email e altera a senha do usuário informado.")]
+        public async Task<IActionResult> UpdatePassword([FromBody] PasswordInputDto input)
+        {
+            var success = await _usuarioService.AtualizarSenhaAsync(input);
+            return success ? Ok("Password atualizado com sucesso!") : BadRequest("Erro ao atualizar password.");
+        }
+
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Admin")]
         [EndpointDescription("[SOMENTE PARA USUÁRIO ADM] Remove um usuário cadastrados filtrado por ID.")]

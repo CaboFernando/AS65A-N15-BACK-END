@@ -15,6 +15,7 @@ namespace BolsaFamilia.Application.Interfaces
         Task<UsuarioDto> BuscarByCpf(string cpf);
         Task<bool> AdicionarAsync(UsuarioDto dto);
         Task<bool> AtualizarAsync(UsuarioDto dto);
+        Task<bool> AtualizarSenhaAsync(PasswordInputDto dto);
         Task<bool> RemoverAsync(int id);
     }
 }
