@@ -44,7 +44,7 @@ Este repositório contém o código-fonte da Web API desenvolvida em .NET 8 para
     * No arquivo `BolsaFamilia.API/appsettings.json`, ajuste as configurações do JWT na seção `Jwt` se necessário:
         ```json
         "Jwt": {
-          "Key": "uF2/xAf8Pwo6MP2xL6EkDqKDPqxlmujMbTyF2cmZxRc=",
+          "Key": "SUA_CHAVE_SECRETA_AQUI",
           "Issuer": "BolsaFamiliaAPI",
           "Audience": "BolsaFamiliaAPIUsers"
         }
