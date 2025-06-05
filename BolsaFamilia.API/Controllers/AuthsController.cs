@@ -20,7 +20,6 @@ namespace BolsaFamilia.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto login)
         {
-            _logger.LogInformation("Iniciando login de usuário.");
             var result = await _authService.AutenticarAsync(login.Email, login.Senha);
 
             if (!result.Success)

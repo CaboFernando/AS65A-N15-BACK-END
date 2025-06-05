@@ -25,10 +25,7 @@ namespace BolsaFamilia.Application.Services
             {
                 var info = await _infoGeraisRepository.BuscaInfoGerais();
                 if (info == null)
-                {
-                    _logger.LogWarning($"Informações gerais não encontradas para atualização.");
                     return Response<bool>.FailureResult("Configurações gerais não encontradas para atualização.");
-                }
 
                 info.ValorBaseRendaPerCapita = dto.ValorBaseRendaPerCapita;
                 info.TiposParentescoPermitidos = dto.TiposParentescoPermitidos;
@@ -49,10 +46,8 @@ namespace BolsaFamilia.Application.Services
             {
                 var info = await _infoGeraisRepository.BuscaInfoGerais();
                 if (info == null)
-                {
-                    _logger.LogWarning($"Informações gerais não encontradas.");
                     return Response<InfoGeraisDto>.FailureResult("Configurações gerais não encontradas. É necessário criar o registro inicial.");
-                }
+
                 return Response<InfoGeraisDto>.SuccessResult(MapToDto(info), "Informações gerais encontradas com sucesso.");
             }
             catch (Exception ex)

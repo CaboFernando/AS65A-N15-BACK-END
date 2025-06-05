@@ -30,34 +30,19 @@ namespace BolsaFamilia.Application.Services
             try
             {
                 if (!ValidadorUtils.CpfValido(dto.Cpf))
-                {
-                    _logger.LogWarning($"CPF inválido: {dto.Cpf}");
                     return Response<bool>.FailureResult("CPF informado é inválido.");
-                }
 
                 if (!ValidadorUtils.EmailValido(dto.Email))
-                {
-                    _logger.LogWarning($"Email inválido: {dto.Email}");
                     return Response<bool>.FailureResult("Email informado é inválido.");
-                }
 
                 if (await _usuarioRepository.BuscarByCpf(dto.Cpf) != null)
-                {
-                    _logger.LogWarning($"Usuário com CPF já cadastrado: {dto.Cpf}");
                     return Response<bool>.FailureResult("Já existe um usuário cadastrado com este CPF.");
-                }
 
                 if (await _usuarioRepository.BuscarByEmail(dto.Email) != null)
-                {
-                    _logger.LogWarning($"Usuário com Email já cadastrado: {dto.Email}");
                     return Response<bool>.FailureResult("Já existe um usuário cadastrado com este e-mail.");
-                }
 
                 if (await _parenteRepository.BuscarByCpf(dto.Cpf) != null)
-                {
-                    _logger.LogWarning($"Usuário com CPF já cadastrado como um membro familiar de outro usuário: {dto.Cpf}");
                     return Response<bool>.FailureResult("Já existe um usuário cadastrado com este CPF como membro familiar de outro usuário.");
-                }
 
                 var user = MapToEntity(dto);
                 await _usuarioRepository.AdicionarAsync(user);
@@ -94,34 +79,20 @@ namespace BolsaFamilia.Application.Services
             {
                 var loggedUserId = await BuscarUsuarioLogadoIdAsync();
                 if (loggedUserId != dto.Id)
-                {
-                    _logger.LogWarning("O usuário logado e o usuário a ser alterado são diferentes.");
                     return Response<bool>.FailureResult("Só é possível alterar o próprio cadastro.");
-                }
 
                 if (!ValidadorUtils.CpfValido(dto.Cpf))
-                {
-                    _logger.LogWarning($"CPF inválido: {dto.Cpf}");
                     return Response<bool>.FailureResult("CPF informado é inválido.");
-                }
 
                 if (!ValidadorUtils.EmailValido(dto.Email))
-                {
-                    _logger.LogWarning($"Email inválido: {dto.Email}");
                     return Response<bool>.FailureResult("E-mail informado é inválido.");
-                }
+
                 if (await _parenteRepository.BuscarByCpf(dto.Cpf) is Parente existingParente && existingParente.UsuarioId != loggedUserId)
-                {
-                    _logger.LogWarning($"Usuário com CPF já cadastrado como um membro familiar de outro usuário: {dto.Cpf}");
                     return Response<bool>.FailureResult("Já existe um usuário cadastrado com este CPF como membro familiar de outro usuário.");
-                }
 
                 var user = await _usuarioRepository.BuscarById(dto.Id);
                 if (user == null)
-                {
-                    _logger.LogWarning($"Usuário não encontrado: ID {dto.Id}");
                     return Response<bool>.FailureResult("Usuário não encontrado.");
-                }
 
                 user.Nome = dto.Nome;
                 user.Cpf = dto.Cpf;
@@ -145,16 +116,10 @@ namespace BolsaFamilia.Application.Services
             {
                 var user = await _usuarioRepository.BuscarByCpf(dto.Cpf);
                 if (user == null)
-                {
-                    _logger.LogWarning($"CPF não encontrado: {dto.Cpf}");
                     return Response<bool>.FailureResult("CPF informado não foi encontrado.");
-                }
 
                 if (!user.Email.Equals(dto.Email, StringComparison.OrdinalIgnoreCase))
-                {
-                    _logger.LogWarning($"CPF e e-mail não conferem: CPF {dto.Cpf}, Email {dto.Email}");
                     return Response<bool>.FailureResult("CPF e e-mail não conferem.");
-                }
 
                 user.SenhaHash = HashPassword(dto.NovaSenha);
                 await _usuarioRepository.AtualizarAsync(user);
@@ -185,10 +150,7 @@ namespace BolsaFamilia.Application.Services
             try
             {
                 if (!ValidadorUtils.CpfValido(cpf))
-                {
-                    _logger.LogWarning($"CPF inválido: {cpf}");
                     return Response<UsuarioDto>.FailureResult("CPF informado é inválido.");
-                }
 
                 var user = await _usuarioRepository.BuscarByCpf(cpf);
 
@@ -242,10 +204,7 @@ namespace BolsaFamilia.Application.Services
             {
                 var user = await _usuarioRepository.BuscarById(id);
                 if (user == null)
-                {
-                    _logger.LogWarning($"Usuário não encontrado para remoção: ID {id}");
                     return Response<bool>.FailureResult("Usuário não encontrado.");
-                }
 
                 await _usuarioRepository.RemoverAsync(user);
                 return Response<bool>.SuccessResult(true, "Usuário removido com sucesso.");

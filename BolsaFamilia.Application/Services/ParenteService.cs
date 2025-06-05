@@ -28,10 +28,7 @@ namespace BolsaFamilia.Application.Services
             try
             {
                 if (!ValidadorUtils.CpfValido(dto.Cpf))
-                {
-                    _logger.LogWarning($"CPF inválido: {dto.Cpf}");
                     return Response<bool>.FailureResult("CPF informado é inválido.");
-                }
 
                 var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
                 if (loggedUserId == null)
@@ -61,10 +58,7 @@ namespace BolsaFamilia.Application.Services
             try
             {
                 if (!ValidadorUtils.CpfValido(dto.Cpf))
-                {
-                    _logger.LogWarning($"CPF inválido: {dto.Cpf}");
                     return Response<bool>.FailureResult("CPF informado é inválido.");
-                }
 
                 var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
                 if (loggedUserId == null)
@@ -102,10 +96,8 @@ namespace BolsaFamilia.Application.Services
             try
             {
                 if (!ValidadorUtils.CpfValido(cpf))
-                {
-                    _logger.LogWarning($"CPF inválido: {cpf}");
                     return Response<ParenteDto>.FailureResult("CPF informado é inválido.");
-                }
+
                 var loggedUserId = await _usuarioService.BuscarUsuarioLogadoIdAsync();
                 if (loggedUserId == null)
                     return Response<ParenteDto>.FailureResult("Usuário não logado ou ID de usuário não encontrado.");
