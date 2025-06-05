@@ -40,6 +40,9 @@ namespace BolsaFamilia.Application.Services
                 if (await _parenteRepository.BuscarByCpf(dto.Cpf, (int)loggedUserId) != null)
                     return Response<bool>.FailureResult("Já existe um parente cadastrado com este CPF para o usuário logado.");
 
+                if (await _parenteRepository.BuscarByCpf(dto.Cpf) != null)
+                    return Response<bool>.FailureResult("Já existe um parente cadastrado com este CPF como membro familiar de outro usuário.");
+
                 var parent = MapToEntity(dto);
                 parent.UsuarioId = (int)loggedUserId;
 
@@ -70,6 +73,9 @@ namespace BolsaFamilia.Application.Services
                 var parent = await _parenteRepository.BuscarById(dto.Id, (int)loggedUserId);
                 if (parent == null)
                     return Response<bool>.FailureResult("Parente não encontrado para o usuário logado.");
+
+                if (await _parenteRepository.BuscarByCpf(dto.Cpf) is Parente existingParente && existingParente.UsuarioId != loggedUserId)
+                    return Response<bool>.FailureResult("Já existe um parente cadastrado com este CPF como membro familiar de outro usuário.");
 
                 parent.Nome = dto.Nome;
                 parent.GrauParentesco = dto.GrauParentesco;

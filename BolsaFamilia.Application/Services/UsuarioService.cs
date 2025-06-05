@@ -53,6 +53,12 @@ namespace BolsaFamilia.Application.Services
                     return Response<bool>.FailureResult("Já existe um usuário cadastrado com este e-mail.");
                 }
 
+                if (await _parenteRepository.BuscarByCpf(dto.Cpf) != null)
+                {
+                    _logger.LogWarning($"Usuário com CPF já cadastrado como um membro familiar de outro usuário: {dto.Cpf}");
+                    return Response<bool>.FailureResult("Já existe um usuário cadastrado com este CPF como membro familiar de outro usuário.");
+                }
+
                 var user = MapToEntity(dto);
                 await _usuarioRepository.AdicionarAsync(user);
 
@@ -103,6 +109,11 @@ namespace BolsaFamilia.Application.Services
                 {
                     _logger.LogWarning($"Email inválido: {dto.Email}");
                     return Response<bool>.FailureResult("E-mail informado é inválido.");
+                }
+                if (await _parenteRepository.BuscarByCpf(dto.Cpf) is Parente existingParente && existingParente.UsuarioId != loggedUserId)
+                {
+                    _logger.LogWarning($"Usuário com CPF já cadastrado como um membro familiar de outro usuário: {dto.Cpf}");
+                    return Response<bool>.FailureResult("Já existe um usuário cadastrado com este CPF como membro familiar de outro usuário.");
                 }
 
                 var user = await _usuarioRepository.BuscarById(dto.Id);
