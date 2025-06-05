@@ -47,7 +47,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", policy =>
     {
         policy
-            .AllowAnyOrigin() // Permite qualquer origem. Para maior segurança, use .WithOrigins("http://127.0.0.1:5500")
+            .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
@@ -105,7 +105,7 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "BolsaFamilia API V1");
-    c.RoutePrefix = "swagger"; // Para funcionar em /swagger
+    c.RoutePrefix = "swagger";
 });
 
 app.UseHttpsRedirection();
