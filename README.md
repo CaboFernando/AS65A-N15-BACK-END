@@ -2,6 +2,8 @@
 
 Este repositório contém o código-fonte da Web API desenvolvida em .NET 8 para o gerenciamento de usuários, seus parentes e informações relacionadas ao programa Bolsa Família. A aplicação implementa autenticação via JWT, utiliza Entity Framework Core para persistência de dados, segue princípios de Domain-Driven Design (DDD) e oferece documentação interativa via Swagger.
 
+* **Link da API em Produção com Swagger:** [https://bolsafamilia-api-c3agdmbpdnhxaufz.brazilsouth-01.azurewebsites.net/swagger/index.html](https://bolsafamilia-api-c3agdmbpdnhxaufz.brazilsouth-01.azurewebsites.net/swagger/index.html)
+
 ---
 
 ## ✨ Funcionalidades Principais
