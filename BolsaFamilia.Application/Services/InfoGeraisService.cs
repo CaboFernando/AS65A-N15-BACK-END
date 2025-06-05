@@ -1,5 +1,6 @@
 ﻿using BolsaFamilia.Application.DTOs;
 using BolsaFamilia.Application.Interfaces;
+using BolsaFamilia.Application.Responses;
 using BolsaFamilia.Application.Utils;
 using BolsaFamilia.Domain.Entities;
 using BolsaFamilia.Domain.Interfaces;
@@ -17,39 +18,47 @@ namespace BolsaFamilia.Application.Services
             _infoGeraisRepository = infoGeraisRepository;
             _logger = logger;
         }
-        
-        public async Task<bool> AtualizarAsync(InfoGeraisDto dto)
+
+        public async Task<Response<bool>> AtualizarAsync(InfoGeraisDto dto)
         {
             try
             {
                 var info = await _infoGeraisRepository.BuscaInfoGerais();
-                if (info == null) return false;
+                if (info == null)
+                {
+                    _logger.LogWarning($"Informações gerais não encontradas para atualização.");
+                    return Response<bool>.FailureResult("Configurações gerais não encontradas para atualização.");
+                }
 
                 info.ValorBaseRendaPerCapita = dto.ValorBaseRendaPerCapita;
                 info.TiposParentescoPermitidos = dto.TiposParentescoPermitidos;
-                
 
                 await _infoGeraisRepository.AtualizarAsync(info);
-                return true;
+                return Response<bool>.SuccessResult(true, "Informações gerais atualizadas com sucesso!");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro ao atualizar o informações gerais.");
-                return false;
+                return Response<bool>.FailureResult("Erro ao atualizar informações gerais.");
             }
         }
 
-        public async Task<InfoGeraisDto> BuscaInfoGerais()
+        public async Task<Response<InfoGeraisDto>> BuscaInfoGerais()
         {
             try
             {
-                var parent = await _infoGeraisRepository.BuscaInfoGerais();
-                return parent == null ? null : MapToDto(parent);
+                var info = await _infoGeraisRepository.BuscaInfoGerais();
+                if (info == null)
+                {
+                    _logger.LogWarning($"Informações gerais não encontradas.");
+                    return Response<InfoGeraisDto>.FailureResult("Configurações gerais não encontradas. É necessário criar o registro inicial.");
+                }
+                return Response<InfoGeraisDto>.SuccessResult(MapToDto(info), "Informações gerais encontradas com sucesso.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro ao buscar o informações gerais");
-                return null;
+                return Response<InfoGeraisDto>.FailureResult("Erro ao buscar informações gerais.");
             }
         }
 

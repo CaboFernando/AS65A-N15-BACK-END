@@ -1,5 +1,6 @@
 ﻿using BolsaFamilia.Application.DTOs;
 using BolsaFamilia.Application.Interfaces;
+using BolsaFamilia.Application.Responses;
 using BolsaFamilia.Application.Utils;
 using BolsaFamilia.Domain.Entities;
 using BolsaFamilia.Domain.Enums;
@@ -24,36 +25,38 @@ namespace BolsaFamilia.Application.Services
             _logger = logger;
         }
 
-        public async Task<bool> AdicionarAsync(UsuarioDto dto)
+        public async Task<Response<bool>> AdicionarAsync(UsuarioDto dto)
         {
             try
             {
                 if (!ValidadorUtils.CpfValido(dto.Cpf))
                 {
                     _logger.LogWarning($"CPF inválido: {dto.Cpf}");
-                    return false;
+                    return Response<bool>.FailureResult("CPF informado é inválido.");
                 }
+
                 if (!ValidadorUtils.EmailValido(dto.Email))
                 {
                     _logger.LogWarning($"Email inválido: {dto.Email}");
-                    return false;
+                    return Response<bool>.FailureResult("Email informado é inválido.");
                 }
 
                 if (await _usuarioRepository.BuscarByCpf(dto.Cpf) != null)
                 {
                     _logger.LogWarning($"Usuário com CPF já cadastrado: {dto.Cpf}");
-                    return false;
+                    return Response<bool>.FailureResult("Já existe um usuário cadastrado com este CPF.");
                 }
+
                 if (await _usuarioRepository.BuscarByEmail(dto.Email) != null)
                 {
                     _logger.LogWarning($"Usuário com Email já cadastrado: {dto.Email}");
-                    return false;
+                    return Response<bool>.FailureResult("Já existe um usuário cadastrado com este e-mail.");
                 }
 
                 var user = MapToEntity(dto);
                 await _usuarioRepository.AdicionarAsync(user);
 
-                var UserByCpf = await _usuarioRepository.BuscarByCpf(dto.Cpf);
+                var userByCpf = await _usuarioRepository.BuscarByCpf(dto.Cpf);
 
                 var parenteTitular = new Parente
                 {
@@ -61,88 +64,99 @@ namespace BolsaFamilia.Application.Services
                     GrauParentesco = "Responsável",
                     Sexo = Sexo.NaoInformado,
                     EstadoCivil = EstadoCivil.NaoInformado,
-                    Cpf = dto.Cpf, 
+                    Cpf = dto.Cpf,
                     Ocupacao = "",
                     Telefone = "00000000000",
-                    Renda = 0, 
-                    
-                    UsuarioId = UserByCpf.Id
+                    Renda = 0,
+                    UsuarioId = userByCpf.Id
                 };
+
                 await _parenteRepository.AdicionarAsync(parenteTitular);
 
-                return true;
+                return Response<bool>.SuccessResult(true, "Usuário cadastrado com sucesso.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro ao adicionar o usuário cpf: {dto.Cpf}");
-                return false;
+                return Response<bool>.FailureResult("Erro ao cadastrar o usuário.");
             }
         }
 
-        public async Task<bool> AtualizarAsync(UsuarioDto dto)
+        public async Task<Response<bool>> AtualizarAsync(UsuarioDto dto)
         {
             try
             {
                 var loggedUserId = await BuscarUsuarioLogadoIdAsync();
                 if (loggedUserId != dto.Id)
                 {
-                    _logger.LogWarning($"O usuário logado e o usuário a ser alterado são diferentes. Só é possível alterar o próprio cadastro");
-                    return false;
+                    _logger.LogWarning("O usuário logado e o usuário a ser alterado são diferentes.");
+                    return Response<bool>.FailureResult("Só é possível alterar o próprio cadastro.");
                 }
+
                 if (!ValidadorUtils.CpfValido(dto.Cpf))
                 {
                     _logger.LogWarning($"CPF inválido: {dto.Cpf}");
-                    return false;
+                    return Response<bool>.FailureResult("CPF informado é inválido.");
                 }
+
                 if (!ValidadorUtils.EmailValido(dto.Email))
                 {
                     _logger.LogWarning($"Email inválido: {dto.Email}");
-                    return false;
+                    return Response<bool>.FailureResult("E-mail informado é inválido.");
                 }
-                
+
                 var user = await _usuarioRepository.BuscarById(dto.Id);
-                if (user == null) return false;
+                if (user == null)
+                {
+                    _logger.LogWarning($"Usuário não encontrado: ID {dto.Id}");
+                    return Response<bool>.FailureResult("Usuário não encontrado.");
+                }
 
                 user.Nome = dto.Nome;
                 user.Cpf = dto.Cpf;
                 user.Email = dto.Email;
                 user.SenhaHash = HashPassword(dto.Senha);
+
                 await _usuarioRepository.AtualizarAsync(user);
-                return true;
+
+                return Response<bool>.SuccessResult(true, "Usuário atualizado com sucesso.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro ao atualizar o usuário id: {dto.Id}");
-                return false;
+                return Response<bool>.FailureResult("Erro interno ao tentar atualizar o usuário.");
             }
         }
 
-        public async Task<bool> AtualizarSenhaAsync(PasswordInputDto dto)
+        public async Task<Response<bool>> AtualizarSenhaAsync(PasswordInputDto dto)
         {
             try
             {
                 var user = await _usuarioRepository.BuscarByCpf(dto.Cpf);
                 if (user == null)
                 {
-                    _logger.LogWarning($"O CPF informado não foi encontrado na base de dados: {dto.Cpf}");
-                    return false;
+                    _logger.LogWarning($"CPF não encontrado: {dto.Cpf}");
+                    return Response<bool>.FailureResult("CPF informado não foi encontrado.");
                 }
-                if (!user.Email.Equals(dto.Email))
+
+                if (!user.Email.Equals(dto.Email, StringComparison.OrdinalIgnoreCase))
                 {
-                    _logger.LogWarning($"O CPF informado não foi confere com o CPF do email informado: CPF {dto.Cpf}, Email {dto.Email}");
-                    return false;
+                    _logger.LogWarning($"CPF e e-mail não conferem: CPF {dto.Cpf}, Email {dto.Email}");
+                    return Response<bool>.FailureResult("CPF e e-mail não conferem.");
                 }
 
                 user.SenhaHash = HashPassword(dto.NovaSenha);
                 await _usuarioRepository.AtualizarAsync(user);
-                return true;
+
+                return Response<bool>.SuccessResult(true, "Senha atualizada com sucesso.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro ao alterar a senha do usuário CPF: {dto.Cpf}");
-                return false;
+                return Response<bool>.FailureResult("Erro ao tentar atualizar a senha.");
             }
         }
+
 
         public async Task<int?> BuscarUsuarioLogadoIdAsync()
         {
@@ -155,69 +169,83 @@ namespace BolsaFamilia.Application.Services
             return userId;
         }
 
-        public async Task<UsuarioDto> BuscarByCpf(string cpf)
+        public async Task<Response<UsuarioDto>> BuscarByCpf(string cpf)
         {
             try
             {
                 if (!ValidadorUtils.CpfValido(cpf))
                 {
                     _logger.LogWarning($"CPF inválido: {cpf}");
-                    return null;
+                    return Response<UsuarioDto>.FailureResult("CPF informado é inválido.");
                 }
+
                 var user = await _usuarioRepository.BuscarByCpf(cpf);
-                return user == null ? null : MapToDto(user);
+
+                if (user == null)
+                    return Response<UsuarioDto>.FailureResult($"Usuário com CPF {cpf} não encontrado.");
+
+                return Response<UsuarioDto>.SuccessResult(MapToDto(user), "Usuário encontrado com sucesso.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao buscar o usuário cpf: {cpf}");
-                return null;
+                _logger.LogError(ex, $"Erro ao buscar o usuário com CPF: {cpf}");
+                return Response<UsuarioDto>.FailureResult("Erro interno ao buscar o usuário.");
             }
         }
 
-        public async Task<UsuarioDto> BuscarById(int id)
+        public async Task<Response<UsuarioDto>> BuscarById(int id)
         {
             try
             {
                 var user = await _usuarioRepository.BuscarById(id);
-                return user == null ? null : MapToDto(user);
+                if (user == null)
+                    return Response<UsuarioDto>.FailureResult($"Usuário id: {id} não encontrado.");
+
+                return Response<UsuarioDto>.SuccessResult(MapToDto(user), "Usuário encontrado com sucesso.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro ao buscar o usuário id: {id}");
-                return null;
+                return Response<UsuarioDto>.FailureResult("Erro interno ao buscar o usuário.");
             }
         }
 
-        public async Task<IEnumerable<UsuarioDto>> ListarTodos()
+        public async Task<Response<IEnumerable<UsuarioDto>>> ListarTodos()
         {
             try
             {
                 var users = await _usuarioRepository.ListarTodos();
-                return users.Select(MapToDto);
+                var usuariosDto = users.Select(MapToDto);
+                return Response<IEnumerable<UsuarioDto>>.SuccessResult(usuariosDto, "Usuários listados com sucesso.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao listar os usuários");
-                return Enumerable.Empty<UsuarioDto>();
+                _logger.LogError(ex, "Erro ao listar os usuários");
+                return Response<IEnumerable<UsuarioDto>>.FailureResult("Erro ao listar os usuários.");
             }
         }
 
-        public async Task<bool> RemoverAsync(int id)
+        public async Task<Response<bool>> RemoverAsync(int id)
         {
             try
-            {                
+            {
                 var user = await _usuarioRepository.BuscarById(id);
-                if (user == null) return false;
+                if (user == null)
+                {
+                    _logger.LogWarning($"Usuário não encontrado para remoção: ID {id}");
+                    return Response<bool>.FailureResult("Usuário não encontrado.");
+                }
 
                 await _usuarioRepository.RemoverAsync(user);
-                return true;
+                return Response<bool>.SuccessResult(true, "Usuário removido com sucesso.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro ao remover o usuário id: {id}");
-                return false;
+                return Response<bool>.FailureResult("Erro ao tentar remover o usuário.");
             }
         }
+
 
         private Usuario MapToEntity(UsuarioDto dto) => new Usuario
         {

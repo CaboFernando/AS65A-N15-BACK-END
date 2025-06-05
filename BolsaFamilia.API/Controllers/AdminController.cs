@@ -21,12 +21,12 @@ namespace BolsaFamilia.API.Controllers
         [EndpointDescription("[SOMENTE PARA USUÁRIO ADM] Lista todas as informações gerais.")]
         public async Task<IActionResult> Get()
         {
-            var info = await _infoGeraisService.BuscaInfoGerais();
-            if (info == null)
-            {
-                return NotFound("Configurações gerais não encontradas. É necessário criar o registro inicial.");
-            }
-            return Ok(info);
+            var result = await _infoGeraisService.BuscaInfoGerais();
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
         [HttpPut("{id:int}")]
@@ -40,8 +40,12 @@ namespace BolsaFamilia.API.Controllers
                 TiposParentescoPermitidos = input.TiposParentescoPermitidos
             };
 
-            var success = await _infoGeraisService.AtualizarAsync(dto);
-            return success ? Ok("Informações gerais atualizadas com sucesso!") : BadRequest("Erro ao atualizar informações gerais.");
+            var result = await _infoGeraisService.AtualizarAsync(dto);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
     }
 }

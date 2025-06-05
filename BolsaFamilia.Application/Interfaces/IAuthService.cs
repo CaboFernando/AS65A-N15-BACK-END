@@ -1,7 +1,9 @@
-﻿namespace BolsaFamilia.Application.Interfaces
+﻿using BolsaFamilia.Application.Responses;
+
+namespace BolsaFamilia.Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<string> AutenticarAsync(string email, string senha);
+        Task<Response<string>> AutenticarAsync(string email, string senha);
     }
 }

@@ -1,8 +1,7 @@
 ﻿using BolsaFamilia.Application.Interfaces;
+using BolsaFamilia.Application.Responses;
 using BolsaFamilia.Domain.Enums;
-using BolsaFamilia.Infra.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BolsaFamilia.API.Controllers
 {
@@ -11,7 +10,7 @@ namespace BolsaFamilia.API.Controllers
     public class DropDownsController : ControllerBase
     {
         private readonly IInfoGeraisService _infoGeraisService;
-        
+
         public DropDownsController(IInfoGeraisService infoGeraisService)
         {
             _infoGeraisService = infoGeraisService;
@@ -20,33 +19,58 @@ namespace BolsaFamilia.API.Controllers
         [HttpGet("estados-civis")]
         public IActionResult GetEstadosCivis()
         {
-            var list = Enum.GetValues(typeof(EstadoCivil)).Cast<EstadoCivil>().Select(e => new {
-                value = (int)e,
-                name = e.ToString()
-            }).ToList();
-            return Ok(list);
+            try
+            {                
+                var list = Enum.GetValues(typeof(EstadoCivil)).Cast<EstadoCivil>().Select(e => new {
+                    value = (int)e,
+                    name = e.ToString()
+                }).ToList();
+                
+                return Ok(Response<List<object>>.SuccessResult(list.Cast<object>().ToList(), "Lista de estados civis obtida com sucesso."));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(Response<List<object>>.FailureResult("Erro ao obter lista de estados civis.", ex));
+            }
         }
 
         [HttpGet("generos")]
         public IActionResult GetGeneros()
         {
-            var list = Enum.GetValues(typeof(Sexo)).Cast<Sexo>().Select(e => new {
-                value = (int)e,
-                name = e.ToString()
-            }).ToList();
-            return Ok(list);
+            try
+            {
+                var list = Enum.GetValues(typeof(Sexo)).Cast<Sexo>().Select(e => new {
+                    value = (int)e,
+                    name = e.ToString()
+                }).ToList();
+                
+                return Ok(Response<List<object>>.SuccessResult(list.Cast<object>().ToList(), "Lista de gêneros obtida com sucesso."));
+            }
+            catch (Exception ex)
+            {                
+                return BadRequest(Response<List<object>>.FailureResult("Erro ao obter lista de gêneros.", ex));
+            }
         }
 
         [HttpGet("tipos-parentesco")]
         public async Task<IActionResult> GetTiposParentesco()
         {
-            var info = await _infoGeraisService.BuscaInfoGerais();
-            if (info == null || string.IsNullOrWhiteSpace(info.TiposParentescoPermitidos))
+            try
             {
-                return Ok(new List<string>());
+                var infoResult = await _infoGeraisService.BuscaInfoGerais();
+                if (!infoResult.Success)
+                {
+                    return BadRequest(Response<List<string>>.FailureResult(infoResult.Message));
+                }
+
+                var info = infoResult.Data;
+                var list = string.IsNullOrWhiteSpace(info.TiposParentescoPermitidos) ? new List<string>() : info.TiposParentescoPermitidos.Split(',').Select(p => p.Trim()).ToList();
+                return Ok(Response<List<string>>.SuccessResult(list, "Lista de tipos de parentesco obtida com sucesso."));
             }
-            var list = info.TiposParentescoPermitidos.Split(',').Select(p => p.Trim()).ToList();
-            return Ok(list);
+            catch (Exception ex)
+            {
+                return BadRequest(Response<List<string>>.FailureResult("Erro ao obter lista de tipos de parentesco.", ex));
+            }
         }
     }
 }

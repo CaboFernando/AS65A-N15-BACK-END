@@ -1,15 +1,14 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using BolsaFamilia.Application.DTOs;
 using BolsaFamilia.Application.Interfaces;
+using BolsaFamilia.Application.Responses;
 using BolsaFamilia.Domain.Entities;
 using BolsaFamilia.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 using BolsaFamilia.Application.Utils;
-
 
 
 namespace BolsaFamilia.Application.Services
@@ -25,16 +24,17 @@ namespace BolsaFamilia.Application.Services
             _configuration = configuration;
         }
 
-        public async Task<string> AutenticarAsync(string email, string senha)
+        public async Task<Response<string>> AutenticarAsync(string email, string senha)
         {
             if (string.IsNullOrWhiteSpace(senha) || !ValidadorUtils.EmailValido(email))
             {
-                return null;
+                return Response<string>.FailureResult("Dados de login inválidos. Verifique o email e a senha.");
             }
+
             var user = await _usuarioRepository.BuscarByEmail(email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(senha, user.SenhaHash))
             {
-                return null;
+                return Response<string>.FailureResult("Usuário ou senha inválidos.");
             }
 
             var claims = new[]
@@ -43,7 +43,7 @@ namespace BolsaFamilia.Application.Services
                 new Claim(ClaimTypes.Name, user.Nome),
                 new Claim(ClaimTypes.Email, user.Email)
             };
-            if(user.IsAdmin)
+            if (user.IsAdmin)
             {
                 claims = claims.Append(new Claim(ClaimTypes.Role, "Admin")).ToArray();
             }
@@ -51,14 +51,21 @@ namespace BolsaFamilia.Application.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddHours(2),
-                signingCredentials: creds);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Issuer = _configuration["Jwt:Issuer"],
+                Audience = _configuration["Jwt:Audience"],
+                Subject = new ClaimsIdentity(claims),
+                NotBefore = DateTime.UtcNow,
+                Expires = DateTime.UtcNow.AddHours(2),
+                SigningCredentials = creds
+            };
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var writtenToken = tokenHandler.WriteToken(token);
+
+            return Response<string>.SuccessResult(writtenToken, "Autenticação realizada com sucesso.");
         }
     }
 }

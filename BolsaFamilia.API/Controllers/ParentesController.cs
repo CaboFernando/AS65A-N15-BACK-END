@@ -23,6 +23,10 @@ namespace BolsaFamilia.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await _parentesService.ListarTodos();
+
+            if (!result.Success)
+                return BadRequest(result);
+
             return Ok(result);
         }
 
@@ -31,7 +35,11 @@ namespace BolsaFamilia.API.Controllers
         public async Task<IActionResult> GetByCpf(string cpf)
         {
             var result = await _parentesService.BuscarByCpf(cpf);
-            return result is null ? NotFound($"Parente cpf: {cpf} não encontrado em nossa base de dados.") : Ok(result);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -50,8 +58,12 @@ namespace BolsaFamilia.API.Controllers
                 Renda = input.Renda
             };
 
-            var success = await _parentesService.AdicionarAsync(dto);
-            return success ? Ok("Parente cadastrado com sucesso!") : BadRequest("Erro ao criar parente.");
+            var result = await _parentesService.AdicionarAsync(dto);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
         [HttpPut("{id:int}")]
@@ -71,24 +83,36 @@ namespace BolsaFamilia.API.Controllers
                 Renda = input.Renda
             };
 
-            var success = await _parentesService.AtualizarAsync(dto);
-            return success ? Ok("Parente atualizado com sucesso!") : BadRequest("Erro ao atualizar parente.");
+            var result = await _parentesService.AtualizarAsync(dto);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
         [HttpDelete("{id:int}")]
         [EndpointDescription("Remove um parente cadastrado pelo usuário logado, filtrado pelo ID.")]
         public async Task<IActionResult> Remove(int id)
         {
-            var success = await _parentesService.RemoverAsync(id);
-            return success ? Ok("Parente removido com sucesso!") : BadRequest("Erro ao remover parente.");
+            var result = await _parentesService.RemoverAsync(id);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
         [HttpGet("renda")]
         [EndpointDescription("Calcula a renda familiar com base nos parentes cadastrados pelo usuário logado.")]
         public async Task<IActionResult> CalcularRenda()
         {
-            var rendaDto = await _parentesService.CalcularRendaFamiliarAsync();
-            return Ok(rendaDto);
+            var result = await _parentesService.CalcularRendaFamiliarAsync();
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
     }
 }

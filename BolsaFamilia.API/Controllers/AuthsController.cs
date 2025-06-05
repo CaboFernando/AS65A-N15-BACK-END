@@ -1,7 +1,6 @@
 using BolsaFamilia.Application.DTOs;
 using BolsaFamilia.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace BolsaFamilia.API.Controllers
 {
@@ -22,13 +21,14 @@ namespace BolsaFamilia.API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto login)
         {
             _logger.LogInformation("Iniciando login de usuário.");
-            var token = await _authService.AutenticarAsync(login.Email, login.Senha);
-            if (token == null)
+            var result = await _authService.AutenticarAsync(login.Email, login.Senha);
+
+            if (!result.Success)
             {
-                return Unauthorized("Usuário ou senha inválidos.");
+                return Unauthorized(result.Message);
             }
 
-            return Ok(new { Token = token });
+            return Ok(new { Token = result.Data, Message = result.Message });
         }
     }
 }

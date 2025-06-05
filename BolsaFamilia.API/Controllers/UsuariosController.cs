@@ -24,6 +24,10 @@ namespace BolsaFamilia.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await _usuarioService.ListarTodos();
+
+            if (!result.Success)
+                return BadRequest(result);
+
             return Ok(result);
         }
 
@@ -33,7 +37,11 @@ namespace BolsaFamilia.API.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _usuarioService.BuscarById(id);
-            return result is null ? NotFound($"Usuário id: {id} não encontrado em nossa base de dados.") : Ok(result);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
         [HttpGet("cpf/{cpf}")]
@@ -42,7 +50,11 @@ namespace BolsaFamilia.API.Controllers
         public async Task<IActionResult> GetByCpf(string cpf)
         {
             var result = await _usuarioService.BuscarByCpf(cpf);
-            return result is null ? NotFound($"Usuário cpf: {cpf} não encontrado em nossa base de dados.") : Ok(result);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
         [AllowAnonymous]
@@ -58,8 +70,12 @@ namespace BolsaFamilia.API.Controllers
                 Senha = input.Senha
             };
 
-            var success = await _usuarioService.AdicionarAsync(dto);
-            return success ? Ok("Usuário cadastrado com sucesso!") : BadRequest("Erro ao criar usuário.");
+            var result = await _usuarioService.AdicionarAsync(dto);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
         [HttpPut("{id:int}")]
@@ -75,8 +91,12 @@ namespace BolsaFamilia.API.Controllers
                 Senha = input.Senha
             };
 
-            var success = await _usuarioService.AtualizarAsync(dto);
-            return success ? Ok("Usuário atualizado com sucesso!") : BadRequest("Erro ao atualizar usuário.");
+            var result = await _usuarioService.AtualizarAsync(dto);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
         [AllowAnonymous]
@@ -84,8 +104,12 @@ namespace BolsaFamilia.API.Controllers
         [EndpointDescription("Valida por CPF e Email e altera a senha do usuário informado.")]
         public async Task<IActionResult> UpdatePassword([FromBody] PasswordInputDto input)
         {
-            var success = await _usuarioService.AtualizarSenhaAsync(input);
-            return success ? Ok("Password atualizado com sucesso!") : BadRequest("Erro ao atualizar password.");
+            var result = await _usuarioService.AtualizarSenhaAsync(input);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
         [HttpDelete("{id:int}")]
@@ -93,8 +117,12 @@ namespace BolsaFamilia.API.Controllers
         [EndpointDescription("[SOMENTE PARA USUÁRIO ADM] Remove um usuário cadastrados filtrado por ID.")]
         public async Task<IActionResult> Remove(int id)
         {
-            var success = await _usuarioService.RemoverAsync(id);
-            return success ? Ok("Usuário removido com sucesso!") : BadRequest("Erro ao remover usuário.");
+            var result = await _usuarioService.RemoverAsync(id);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
     }
 }

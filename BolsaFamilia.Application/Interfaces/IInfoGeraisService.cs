@@ -1,11 +1,12 @@
 ﻿using BolsaFamilia.Application.DTOs;
+using BolsaFamilia.Application.Responses;
 
 namespace BolsaFamilia.Application.Interfaces
 {
     public interface IInfoGeraisService
     {
-        Task<InfoGeraisDto> BuscaInfoGerais();
-        Task<bool> AtualizarAsync(InfoGeraisDto dto);
+        Task<Response<InfoGeraisDto>> BuscaInfoGerais();
+        Task<Response<bool>> AtualizarAsync(InfoGeraisDto dto);
 
     }
 }
