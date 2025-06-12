@@ -15,6 +15,8 @@ namespace BolsaFamilia.Application.DTOs
         public string Email { get; set; }
         public string Senha { get; set; }
 
+        public bool IsAdmin { get; set; }
+
         public ICollection<ParenteDto> Parentes { get; set; } = new List<ParenteDto>();
     }
 }

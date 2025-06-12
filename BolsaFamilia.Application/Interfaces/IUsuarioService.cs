@@ -14,6 +14,7 @@ namespace BolsaFamilia.Application.Interfaces
         Task<int?> BuscarUsuarioLogadoIdAsync();
         Task<Response<UsuarioDto>> BuscarById(int id);
         Task<Response<UsuarioDto>> BuscarByCpf(string cpf);
+        Task<Response<UsuarioDto>> BuscarByEmail(string email);
         Task<Response<bool>> AdicionarAsync(UsuarioDto dto);
         Task<Response<bool>> AtualizarAsync(UsuarioDto dto);
         Task<Response<bool>> AtualizarSenhaAsync(PasswordInputDto dto);

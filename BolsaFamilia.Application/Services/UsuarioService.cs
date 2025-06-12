@@ -183,6 +183,23 @@ namespace BolsaFamilia.Application.Services
             }
         }
 
+        public async Task<Response<UsuarioDto>> BuscarByEmail(string email)
+        {
+            try
+            {
+                var user = await _usuarioRepository.BuscarByEmail(email);
+                if (user == null)
+                    return Response<UsuarioDto>.FailureResult($"Usuário email: {email} não encontrado.");
+
+                return Response<UsuarioDto>.SuccessResult(MapToDto(user), "Usuário encontrado com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao buscar o usuário email: {email}");
+                return Response<UsuarioDto>.FailureResult("Erro interno ao buscar o usuário.");
+            }
+        }
+
         public async Task<Response<IEnumerable<UsuarioDto>>> ListarTodos()
         {
             try
@@ -232,6 +249,7 @@ namespace BolsaFamilia.Application.Services
             Cpf = usuario.Cpf,
             Email = usuario.Email,
             Senha = usuario.SenhaHash,
+            IsAdmin = usuario.IsAdmin,
             Parentes = usuario.Parentes.Select(p => new ParenteDto
             {
                 Id = p.Id,
