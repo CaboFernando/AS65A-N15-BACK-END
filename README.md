@@ -77,6 +77,8 @@ Para acessar os endpoints protegidos, você precisa obter um token JWT.
         ```json
         {
           "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "idUsuario": 1,
+          "isAdm": true
           "message": "Autenticação realizada com sucesso."
         }
         ```
@@ -108,7 +110,7 @@ A seguir, a lista detalhada dos endpoints disponíveis, agrupados por controlado
           "senha": "string"
         }
         ```
-    * **Retorno (Sucesso):** Objeto com `Token` (string JWT) e `Message`.
+    * **Retorno (Sucesso):** Objeto com `Token` (string JWT), `IdUsuario` (int), `IsAdmin` (bool) e `Message` (string).
     * **Retorno (Falha):** `401 Unauthorized` com a `Message` "Usuário ou senha inválidos." ou "Dados de login inválidos. Verifique o email e a senha.".
 
 ### 👤 UsuariosController (`/api/Usuarios`)
