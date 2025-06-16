@@ -170,6 +170,13 @@ namespace BolsaFamilia.Application.Services
         {
             try
             {
+                var loggedUserId = await BuscarUsuarioLogadoIdAsync();
+                if (loggedUserId is null)
+                    return Response<UsuarioDto>.FailureResult("É necessário estar logado para buscar as informações do usuário por id.");
+
+                if (loggedUserId != id)
+                    return Response<UsuarioDto>.FailureResult("Só é possível buscar informações do próprio cadastro.");
+
                 var user = await _usuarioRepository.BuscarById(id);
                 if (user == null)
                     return Response<UsuarioDto>.FailureResult($"Usuário id: {id} não encontrado.");
