@@ -32,8 +32,7 @@ namespace BolsaFamilia.API.Controllers
         }
 
         [HttpGet("{id:int}")]
-        [Authorize(Roles = "Admin")]
-        [EndpointDescription("[SOMENTE PARA USUÁRIO ADM] Listar um usuário cadastrados filtrado por ID.")]
+        [EndpointDescription("Listar um usuário cadastrados filtrado por ID.")]
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _usuarioService.BuscarById(id);
