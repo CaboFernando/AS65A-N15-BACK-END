@@ -136,8 +136,8 @@ A seguir, a lista detalhada dos endpoints disponíveis, agrupados por controlado
     * **Retorno (Sucesso):** `Response<IEnumerable<UsuarioDto>>` com a lista de usuários.
 
 * **`GET /{id}`**
-    * **Descrição:** [SOMENTE PARA USUÁRIO ADM] Lista um usuário cadastrado filtrado por ID.
-    * **Acesso:** Requer Autenticação e Role `Admin`.
+    * **Descrição:** Lista um usuário cadastrado filtrado por ID.
+    * **Acesso:** Requer Autenticação.
     * **Parâmetro de Rota:** `id` (inteiro).
     * **Retorno (Sucesso):** `Response<UsuarioDto>` com o usuário encontrado.
     * **Retorno (Falha):** `Response<UsuarioDto>` com `Success: false` e `Message: "Usuário id: {id} não encontrado."`.
